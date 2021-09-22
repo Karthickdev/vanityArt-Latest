@@ -1,0 +1,7 @@
+{
+  "name": "VanityArt",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular"
+}

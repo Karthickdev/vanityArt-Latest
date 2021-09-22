@@ -1,0 +1,90 @@
+<ion-header class="class-headerimg">
+  <div class="ion-text-center ion-text-uppercase title" ></div>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="ion-padding ion-text-center">
+  </div>
+  <ion-grid>
+    <ion-row class="ion-margin-vertical ion-padding-vertical">
+      <ion-col size="1" class="ion-padding-vertical ion-text-center"></ion-col>
+      <ion-col size="2" class="ion-padding-vertical ion-text-center" style="padding-right: 0">
+        <ion-button size="large" class="ion-text-uppercase btn-height" color="dark" fill="outline" 
+          style="background: #C3DBB7">
+          <ion-thumbnail class="scanner-svg">
+            <img src="../../assets/icon/delivery-truck.svg">
+          </ion-thumbnail>
+        </ion-button>
+      </ion-col>
+      <ion-col size="8" class="ion-padding-vertical ion-text-center" style="padding-left: 0">
+        <ion-button size="large" class="ion-text-uppercase btn-height" color="dark" fill="outline" 
+          style="background: #C3DBB7" (click)="gotobolscan()">
+          BOL Scan
+        </ion-button>
+      </ion-col>
+      <ion-col size="1" class="ion-padding-vertical ion-text-center"></ion-col>
+      <ion-col size="1" class="ion-padding-vertical ion-text-center"></ion-col>
+      <ion-col size="2" class="ion-padding-vertical ion-text-center" style="padding-right: 0">
+        <ion-button size="large" class="ion-text-uppercase btn-height" color="dark" fill="outline" style="background: #00BFCC"
+          >
+          <ion-thumbnail class="scanner-svg">
+            <img src="../../assets/icon/route.svg">
+          </ion-thumbnail>
+        </ion-button>
+      </ion-col>
+      <ion-col size="8" class="ion-padding-vertical ion-text-center" style="padding-left: 0">
+        <ion-button size="large" class="ion-text-uppercase btn-height" color="dark" fill="outline" style="background: #00BFCC"
+           (click)="gototracking()">
+          Tracking # Scan
+        </ion-button>
+      </ion-col>
+      <ion-col size="1" class="ion-padding-vertical ion-text-center"></ion-col>
+      <ion-col size="1" class="ion-padding-vertical ion-text-center"></ion-col>
+      <ion-col size="2" class="ion-padding-vertical ion-text-center" style="padding-right: 0">
+        <ion-button size="large" class="ion-text-uppercase btn-height" color="dark" fill="outline" style="background: #FC6864"
+          >
+          <ion-thumbnail class="scanner-svg">
+            <img src="../../assets/icon/analysis.svg">
+          </ion-thumbnail>
+        </ion-button>
+      </ion-col>
+      <ion-col size="8" class="ion-padding-vertical ion-text-center" style="padding-left: 0">
+        <ion-button size="large" class="ion-text-uppercase btn-height" color="dark" fill="outline" style="background: #FC6864"
+           (click)="gotoreports()">
+          <span>
+            Reports
+          </span>
+        </ion-button>
+      </ion-col>
+      <ion-col size="1" class="ion-padding-vertical ion-text-center"></ion-col>
+      <ion-col size="1" class="ion-padding-vertical ion-text-center"></ion-col>
+      <ion-col size="2" class="ion-padding-vertical ion-text-center" style="padding-right: 0">
+        <ion-button size="large" class="ion-text-uppercase btn-height" color="dark" fill="outline" style="background: #1db4ad"
+          >
+          <ion-thumbnail class="scanner-svg">
+            <img src="../../assets/icon/analysis.svg">
+          </ion-thumbnail>
+        </ion-button>
+      </ion-col>
+      <ion-col size="8" class="ion-padding-vertical ion-text-center" style="padding-left: 0">
+        <ion-button size="large" class="ion-text-uppercase btn-height" color="dark" fill="outline" style="background: #1db4ad"
+           (click)="gotoreturns()">
+          <span>
+            Returns
+          </span>
+        </ion-button>
+      </ion-col>
+      <ion-col size="1" class="ion-padding-vertical ion-text-center"></ion-col>
+      <ion-col size="8" class="ion-padding-vertical ion-text-center"></ion-col>
+      <ion-col size="3" class="ion-padding-vertical ion-text-center">
+        <ion-button size="large" class="ion-text-uppercase btn-height" color="dark" fill="outline" style="background: #ffffff"
+          (click)="gotohomepage()">
+          <ion-thumbnail class="scanner-svg">
+            <img src="../../assets/icon/exit-door.svg">
+          </ion-thumbnail>
+        </ion-button>
+      </ion-col>
+      <ion-col size="1" class="ion-padding-vertical ion-text-center"></ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

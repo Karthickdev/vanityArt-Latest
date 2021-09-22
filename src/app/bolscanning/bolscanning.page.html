@@ -1,0 +1,188 @@
+<ion-header class="ion-no-padding class-headerimg">
+  <div class="ion-text-center ion-text-uppercase title">BOL SCANNING</div>
+  <ion-toolbar class="tool2">
+    <ion-grid class="ion-no-padding">
+      <ion-row>
+        <ion-col size="4" class="ion-text-left padd-left-0">
+          <ion-buttons class="back-marg">
+            <ion-button style="font-size: 22px;color: #ffffff" (click)="backToHome()">BACK</ion-button>
+          </ion-buttons>
+        </ion-col>
+        <ion-col size="1"></ion-col>
+        <ion-col size="2" class="ion-text-center">
+          <ion-button fill='clear' class="save-center" type="submit" (click)="bolscansubmit()"
+            [disabled]="bolscanning.invalid || autoSave == true || enableSaveBtn == false">SAVE
+          </ion-button>
+        </ion-col>
+        <ion-col size="1"></ion-col>
+        <ion-col size="4" class="ion-text-right" (click)="formreset()">
+          <ion-buttons class="clear-marg">
+            <ion-button style="font-size: 22px;color: #ffffff">CLEAR</ion-button>
+          </ion-buttons>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="ion-no-padding">
+  <form [formGroup]="bolscanning">
+    <ion-row class="row-padd">
+      <ion-col size="11">
+        <ion-item>
+          <ion-label position="floating" class="lab-font lab-color">BOL #</ion-label>
+          <ion-input #bolnumber clearInput class="ion-text-uppercase lab-font" type="text" formControlName="bolnumber"
+            (keyup.enter)="handleScanner($event)"></ion-input>
+        </ion-item>
+        <div class="validation-errors">
+          <div *ngFor="let validation of validation_messages['bolnumber']">
+            <div class="error-message"
+              *ngIf="bolscanning.get('bolnumber').hasError(validation['type']) && bolscanning.get('bolnumber').touched">
+              {{ validation.message }}
+            </div>
+          </div>
+        </div>
+      </ion-col>
+      <ion-col size="1"
+        style="display: flex!important; align-content: center!important; align-items: center!important;">
+        <ion-buttons>
+          <ion-button fill="clear" (click)="scanOrder()" type="button" item-right
+            style="background:white; margin-top: 100%">
+            <ion-icon name="search" style="width: 35px; height: 35px; color:darkgray"> </ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-col>
+    </ion-row>
+    <ion-row class="row-padd">
+      <ion-col size="12">
+        <ion-item>
+          <ion-label position="floating" class="lab-font lab-color">Item No</ion-label>
+          <ion-input type="text" #itemNo (keyup.enter)="handleitemScanner($event)" formControlName="itemvalues"
+            clearInput class="ion-text-uppercase lab-font">
+          </ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+
+    <ion-row class="row-padd">
+      <ion-col size="12">
+        <ion-item>
+          <ion-label position="floating" class="lab-font lab-color">Serial No</ion-label>
+          <ion-input type="text" #serialNo (ionInput)="handleserialNoScanner($event)" maxLength="11" formControlName="serialNo"
+            clearInput class="ion-text-uppercase lab-font">
+          </ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+
+    <ion-row class="rowtab" *ngIf="scanItemList != undefined && scanItemList.length > 0">
+      <ion-col size="4">
+        <ion-label position="floating" class="lab-font lab-color">ITEM</ion-label>
+      </ion-col>
+      <ion-col size="4" class="ion-text-center">
+        <ion-label position="floating" class="lab-font lab-color">QTY</ion-label>
+      </ion-col>
+      <ion-col size="4" class="ion-text-right">
+        <ion-label position="floating" class="lab-font lab-color">SCAN</ion-label>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngFor="let item of scanItemList;let i = index" class="rowtab">
+      <ion-col size="4">
+        <ion-label [ngClass]="item.selected == true && item.itemUpc == bolscanning.value.itemvalues ? 'itemName': ''" position="floating" class="lab-font lab-color">{{item.itemName}}</ion-label>
+      </ion-col>
+      <ion-col size="4" class="ion-text-center">
+        <ion-label [ngClass]="item.selected == true && item.itemUpc == bolscanning.value.itemvalues ? 'itemName': ''" position="floating" class="lab-font lab-color">{{item.itemQuantity}}</ion-label>
+      </ion-col>
+      <!-- <ion-col size="2">
+        <img src="./assets/icon/checkmark-circle.svg" class="imgscan" width="50%">
+      </ion-col> -->
+
+      <!-- item.isscanneditemslist == 0 ? 'gray' : item.isscanneditemslist < item.itemQuantity ? 'orange' : item.isscanneditemslist >= item.itemQuantity ? 'green' : '' -->
+      <ion-col size="2" (click)="checkToComplete(item)">
+        <ion-icon name="checkmark-circle"
+        [style.color]="item.selected == true  ? 'orange' : item.scannedItems >= item.itemQuantity || item.isScanned == true ? 'green' : item.scannedItems == 0 ? 'gray':''"
+        class="imgscan"></ion-icon>
+      </ion-col>
+      <!-- && item.itemUpc == bolscanning.value.itemvalues -->
+      <ion-col size="2"> 
+        <!-- <ion-progress-bar *ngIf="item.scannedItems == 0" color="primary" value="0" width="50%"
+          id="bar">
+        </ion-progress-bar> -->
+        <ion-progress-bar *ngIf="item.isScanned == false" color="primary" value="{{(1/item.itemQuantity)* item.scannedItems}}" width="50%"
+          id="bar">
+        </ion-progress-bar>
+        <ion-progress-bar *ngIf="item.isScanned == true " color="primary" value="1" width="50%"
+          id="bar">
+        </ion-progress-bar>
+      </ion-col>
+      <ion-note style="margin-left: 1%;">{{item.itemDescription}}</ion-note>
+      <!-- <ion-col size="2">
+        <ion-progress-bar color="primary" value="{{(1/item.itemQuantity)* item.isscanneditemslist}}" width="50%" id="bar_{{i}}">
+        </ion-progress-bar>
+      </ion-col> --> 
+    </ion-row>
+
+    <ion-row class="row-padd">
+      <ion-col size="12">
+        <ion-item>
+          <ion-label position="floating" class="lab-font lab-color">PRO # </ion-label>
+          <ion-input #pro type="text" class="lab-font lab-color" style="width: 50%;" formControlName="pro"
+            (keyup.enter)="handleproScanner($event)">
+          </ion-input>
+        </ion-item>
+        <div class="validation-errors">
+          <div *ngFor="let validation of validation_messages['pro']">
+            <div class="error-message"
+              *ngIf="bolscanning.get('pro').hasError(validation['type']) && bolscanning.get('pro').touched">
+              {{ validation.message }}
+            </div>
+          </div>
+        </div>
+      </ion-col>
+    </ion-row>
+    <ion-row class="row-padd">
+      <ion-col size="12">
+        <ion-item lines="none">
+          <ion-label position="floating" class="lab-font lab-color"> Order No
+            &nbsp;{{po}}{{customername}}
+          </ion-label>
+          <br>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row class="row-padd">
+      <ion-col size="12">
+        <ion-item lines="none">
+          <ion-label position="floating" class="lab-font lab-color"> ShipDate &nbsp; {{shipdate}}
+          </ion-label>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </form>
+  <ion-toolbar class="tool1">
+    <ion-grid style="padding: 3% 5%">
+      <ion-row>
+        <ion-col size="5">
+          <ion-label class="lab-font">Auto Save</ion-label>
+        </ion-col>
+        <ion-col size="2" class="ion-text-center">
+          <label class="switch"><input type="checkbox" (change)="isChecked($event)">
+            <div class="slider rnd"><span class="on">ON</span><span class="off">OFF</span></div>
+          </label>
+        </ion-col>
+        <ion-col size="5"></ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+  <ion-row class="marginTL10">
+    <ion-col size="12">
+      <ion-label position="stacked" class="event-font marginTL10">Event Log</ion-label>
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col size="12">
+      <ion-item class="ion-padding-horizontal">
+        <ion-textarea rows="3" [readonly]='true' [(ngModel)]="eventLog" class="event-font-italic"></ion-textarea>
+      </ion-item>
+    </ion-col>
+  </ion-row>
+</ion-content>

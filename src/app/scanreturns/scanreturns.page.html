@@ -1,0 +1,192 @@
+<ion-header class="ion-no-padding class-headerimg">
+  <div class="ion-text-center ion-text-uppercase title">RETURNS</div>
+  <ion-toolbar class="tool2">
+    <ion-grid class="ion-no-padding">
+      <ion-row>
+        <ion-col size="4" class="ion-text-left padd-left-0">
+          <ion-buttons class="back-marg">
+            <ion-button style="font-size: 22px;color: #ffffff" (click)="backToHome()">BACK</ion-button>
+          </ion-buttons>
+        </ion-col>
+        <ion-col size="1"></ion-col>
+        <ion-col size="2" class="ion-text-center">
+          <ion-button fill='clear' class="save-center" type="submit" [disabled]="!enableSaveBtn" (click)="saveReturn()">SAVE
+          </ion-button>
+        </ion-col>
+        <ion-col size="1"></ion-col>
+        <ion-col size="4" class="ion-text-right" (click)="formreset()">
+          <ion-buttons class="clear-marg">
+            <ion-button style="font-size: 22px;color: #ffffff">CLEAR</ion-button>
+          </ion-buttons>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <!-- SERIAL SCANNING -->
+  <div *ngIf="isSerailScan">
+    <ion-row>
+      <ion-col size="6"></ion-col>
+      <ion-col size="6" style="text-align: left;text-indent: 30px;">
+        <ion-button expand="block" class="loggbtn" (click)="switchToPo()">SWITCH TO SCAN PO#
+        </ion-button>
+      </ion-col>
+    </ion-row>
+    <form [formGroup]="serialScanning" (keyup.enter)="handleSerialScan()">
+      <ion-item class="textfields">
+        <ion-col size="9">
+          <ion-label class="lab-font">Serial #</ion-label>
+          <ion-input #serial clearInput class="ion-text-uppercase lab-font" type="text" formControlName="serial"></ion-input>
+        </ion-col>
+        <ion-col size="3" style="text-align: right;">
+          <ion-icon name="search" style="width: 35px; height: 35px; color:darkgray;" (click)="handleSerialScan()"> </ion-icon>
+        </ion-col>
+      </ion-item>
+      <div class="validation-errors">
+        <div *ngFor="let validation of validation_messages['serial']">
+          <div class="error-scan"
+            *ngIf="serialScanning.get('serial').hasError(validation['type']) && serialScanning.get('serial').touched">
+            {{ validation.message }}
+          </div>
+        </div>
+      </div>
+    </form>
+    <ion-item class="textfields">
+      <ion-label position="floating" class="lab-font">PO#</ion-label>
+      <ion-input class="lab-font ion-text-uppercase" [(ngModel)]="poNumber" readonly></ion-input>
+    </ion-item>
+    <ion-note *ngIf="customerName" style="padding-left: 30px;">Customer: {{customerName}}</ion-note>
+    <!-- <ion-item class="textfields">
+      <ion-label position="floating" class="lab-font">ITEM</ion-label>
+      <ion-input [(ngModel)]="itemUpc" class="lab-font ion-text-uppercase" readonly></ion-input>
+    </ion-item> -->
+    <!-- Display SKU instead of UPC -->
+    <ion-item class="textfields">
+      <ion-label position="floating" class="lab-font">ITEM</ion-label>
+      <ion-input [(ngModel)]="itemSku" class="lab-font ion-text-uppercase" readonly></ion-input>
+    </ion-item>
+    <ion-row style="text-indent: 25px;">
+      <ion-col>
+        <ion-label style="color: rgb(28, 31, 31);" class="lab-font">Warehouse</ion-label>
+        <ion-note style="color: red;font-size: 25px;">*</ion-note>
+      </ion-col>
+    </ion-row>
+    <ion-row class="dropdown">
+      <ion-col>
+        <ion-select  [(ngModel)]="warehouse">
+          <ion-select-option *ngFor="let warehouse of warehouseList" value="{{warehouse.value}}">{{warehouse.title}}</ion-select-option>
+        </ion-select>
+      </ion-col>
+    </ion-row>
+    
+    <!-- <ion-item class="dropdown"> -->
+      
+    <!-- </ion-item> -->
+    <ion-row style="text-indent: 25px;">
+      <ion-col>
+        <ion-label style="color: rgb(28, 31, 31);" class="lab-font">Condition</ion-label>
+        <ion-note style="color: red;font-size: 25px;">*</ion-note>
+      </ion-col>
+    </ion-row>
+    <ion-row class="dropdown">
+      <ion-col>
+        <ion-select  [(ngModel)]="condition">
+          <ion-select-option *ngFor="let condition of conditionList" value="{{condition.value}}">{{condition.title}}</ion-select-option>
+        </ion-select>
+      </ion-col>
+    </ion-row>
+    <ion-item class="textfields">
+      <ion-col>
+        <ion-label style="color: rgb(28, 31, 31);" class="lab-font">Notes</ion-label>
+        <ion-textarea rows="3" [(ngModel)]="notes" class="event-font-italic lab-font"></ion-textarea>
+      </ion-col>
+    </ion-item>
+  </div>
+<!-- SERIAL SCANNING END -->
+<!-- PO SCANNING -->
+  <div *ngIf="!isSerailScan">
+    <ion-row>
+      <ion-col size="6"></ion-col>
+      <ion-col size="6" style="text-align: left;text-indent: 30px;">
+        <ion-button expand="block" class="loggbtn" (click)="switchToserial()">SWITCH TO SCAN SERIAL#
+        </ion-button>
+      </ion-col>
+    </ion-row>
+    <form [formGroup]="poScanning" (keyup.enter)="handlePoScan()">
+      <ion-item class="textfields">
+        <ion-col size="9">
+          <ion-label class="lab-font">PO #</ion-label>
+          <ion-input #po clearInput class="ion-text-uppercase lab-font" type="text" formControlName="po"></ion-input>
+        </ion-col>
+        <ion-col size="3" style="text-align: right;">
+          <ion-icon name="search" style="width: 35px; height: 35px; color:darkgray;" (click)="handlePoScan()"> </ion-icon>
+        </ion-col>
+      </ion-item>
+      <div class="validation-errors">
+        <div *ngFor="let validation of validation_messages['po']">
+          <div class="error-scan"
+            *ngIf="poScanning.get('po').hasError(validation['type']) && poScanning.get('po').touched">
+            {{ validation.message }}
+          </div>
+        </div>
+      </div>
+    </form>
+    <ion-note *ngIf="customerName" style="padding-left: 30px;" class="lab-font">Customer: {{customerName}}</ion-note>
+    <ion-item class="textfields">
+      <ion-col size="9">
+        <ion-label class="lab-font">ITEM</ion-label>
+        <ion-input #item [(ngModel)]="itemUpc" class="lab-font" [readonly]="itemReadOnly" (keyup.enter)="handleitemScan()"></ion-input>
+      </ion-col>
+      <ion-col size="3" style="text-align: right;">
+        <ion-icon name="search" style="width: 35px; height: 35px; color:darkgray;" (click)="handleitemScan()"> </ion-icon>
+      </ion-col>
+    </ion-item>
+    <ion-row style="text-indent: 25px;">
+      <ion-col>
+        <ion-label style="color: rgb(28, 31, 31);" class="lab-font">Warehouse</ion-label>
+        <ion-note style="color: red;font-size: 25px;">*</ion-note>
+      </ion-col>
+    </ion-row>
+    <ion-row class="dropdown">
+      <ion-col>
+        <ion-select  [(ngModel)]="warehouse">
+          <ion-select-option *ngFor="let warehouse of warehouseList" value="{{warehouse.value}}">{{warehouse.title}}</ion-select-option>
+        </ion-select>
+      </ion-col>
+    </ion-row>
+    <ion-row style="text-indent: 25px;">
+      <ion-col>
+        <ion-label style="color: rgb(28, 31, 31);" class="lab-font">Condition</ion-label>
+        <ion-note style="color: red;font-size: 25px;">*</ion-note>
+      </ion-col>
+    </ion-row>
+    <ion-row class="dropdown">
+      <ion-col>
+        <ion-select  [(ngModel)]="condition">
+          <ion-select-option *ngFor="let condition of conditionList" value="{{condition.value}}">{{condition.title}}</ion-select-option>
+        </ion-select>
+      </ion-col>
+    </ion-row>
+    <ion-item class="textfields">
+      <ion-col>
+        <ion-label style="color: rgb(28, 31, 31);" class="lab-font">Notes</ion-label>
+        <ion-textarea rows="3" [(ngModel)]="notes" class="event-font-italic"></ion-textarea>
+      </ion-col>
+    </ion-item>
+    
+  </div>
+  <!-- PO SCANNING END -->
+  <ion-row class="marginTL10">
+    <ion-col size="12">
+      <ion-label position="stacked" class="event-font marginTL10">Event Log</ion-label>
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col size="12">
+      <ion-item class="ion-padding-horizontal">
+        <ion-textarea rows="3" [readonly]='true' [(ngModel)]="eventLog" class="event-font-italic"></ion-textarea>
+      </ion-item>
+    </ion-col>
+  </ion-row>
+</ion-content>

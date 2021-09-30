@@ -11,8 +11,8 @@ import { ApiserviceService } from './apiservice.service';
   styleUrls: ['app.component.scss']
 })
 export class AppComponent {
-    //version: string = "0.1.1"; //UAT
-    version: string = "0.1.1"; //PROD
+    version: string = "0.1.1"; //UAT
+    //version: string = "0.1.1"; //PROD
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,

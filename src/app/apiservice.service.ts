@@ -6,8 +6,8 @@ import { ToastController, LoadingController, AlertController } from '@ionic/angu
   providedIn: 'root'
 })
 export class ApiserviceService {
-  //baseUrl: string = 'http://67.79.237.242/opal/uat/vanityart/'; //UAT
- baseUrl: string = 'https://www2.order-fulfillment.bz/vanityart/'; //NEW PROD
+  baseUrl: string = 'http://67.79.237.242/opal/uat/vanityart/'; //UAT
+ //baseUrl: string = 'https://www2.order-fulfillment.bz/vanityart/'; //NEW PROD
 	//Login
 	userLogin: string = "UserApi/UserLogin";
 	getscanitems: string = "ordersapi/BOLScanDetails";

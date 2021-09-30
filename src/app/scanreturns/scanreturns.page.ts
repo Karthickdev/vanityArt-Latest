@@ -4,6 +4,7 @@ import { ApiserviceService } from '../apiservice.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Keyboard } from '@ionic-native/keyboard/ngx';
 import { IonContent, AlertController, IonRouterOutlet } from '@ionic/angular';
+import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 
 @Component({
   selector: 'app-scanreturns',
@@ -37,15 +38,25 @@ export class ScanreturnsPage implements OnInit {
   itemReadOnly: boolean = true;
   enableSaveBtn: boolean = false;
   itemSku:any;
+  enableTakePhoto: boolean = false;
+  photoType:any;
+  cameraOptions: CameraOptions = {
+    quality: 20,
+    destinationType: this.camera.DestinationType.DATA_URL,
+    encodingType: this.camera.EncodingType.JPEG,
+    mediaType: this.camera.MediaType.PICTURE
+  }
   constructor(private formBuilder: FormBuilder, private Vanityartservice: ApiserviceService, private route: Router, private keyboard: Keyboard,
-    private activatedRoute: ActivatedRoute, private alertCtrl: AlertController, private routerOutlet: IonRouterOutlet) {
+    private activatedRoute: ActivatedRoute, private alertCtrl: AlertController, private routerOutlet: IonRouterOutlet, private camera: Camera) {
     this.serialScanning = this.formBuilder.group({
       serial: ['', Validators.compose([Validators.required])],
     });
     this.poScanning = this.formBuilder.group({
       po: ['', Validators.compose([Validators.required])],
     });
-    
+   // this.photoType = ['Return Label', 'SKU', 'Damaged Area', 'Up front'];
+    this.photoType = [{"typeName": "Return Label", "img": "../../assets/default-thumbnail.jpg"},{"typeName": "SKU", "img": "../../assets/default-thumbnail.jpg"},
+    {"typeName": "Damaged Area", "img": "../../assets/default-thumbnail.jpg"},{"typeName": "Up front", "img": "../../assets/default-thumbnail.jpg"}]
    }
 
    validation_messages: any = {
@@ -154,6 +165,7 @@ export class ScanreturnsPage implements OnInit {
     this.poScanning.reset();
     this.itemReadOnly = true;
     this.enableSaveBtn = false;
+    this.enableTakePhoto = false;
     if(this.isSerailScan){
       setTimeout(()=>{
         this.serial.setFocus();
@@ -318,12 +330,27 @@ export class ScanreturnsPage implements OnInit {
     })
   }
 
-  onWarehouseChange(value){
-    this.warehouse = value
+  onConditionChange(){
+    if(this.condition == "20" || this.condition == "30"){
+      this.enableTakePhoto = true
+    }else{
+      this.enableTakePhoto = false
+    }
   }
 
-  onConditionChange(value){
-    this.condition = value
+  takePhoto(type){
+    this.camera.getPicture(this.cameraOptions).then((imageData) => {
+      // imageData is either a base64 encoded string or a file URI
+      // If it's base64 (DATA_URL):
+      let base64Image = 'data:image/jpeg;base64,' + imageData;
+      for(let item of this.photoType){
+        if(item.typeName == type.typeName){
+          item.img = base64Image
+        }
+      }
+     }, (err) => {
+      // Handle error
+     });
   }
 
   async saveReturn(){

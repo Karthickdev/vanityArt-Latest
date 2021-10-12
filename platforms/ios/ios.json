@@ -10,7 +10,7 @@
           "NSCameraUsageDescription": [
             {
               "xml": "<string>This App requires access to camera.</string>",
-              "count": 6
+              "count": 8
             }
           ]
         }

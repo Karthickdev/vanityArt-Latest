@@ -40,6 +40,10 @@ export class ScanreturnsPage implements OnInit {
   itemSku:any;
   enableTakePhoto: boolean = false;
   photoType:any;
+  returnLabelPhoto:any;
+  skuPhoto:any;
+  damagedAreaPhoto:any;
+  upFrontPhoto:any;
   cameraOptions: CameraOptions = {
     quality: 20,
     destinationType: this.camera.DestinationType.DATA_URL,
@@ -348,7 +352,21 @@ export class ScanreturnsPage implements OnInit {
       for(let item of this.photoType){
         if(item.typeName == type.typeName){
           item.img = base64Image
+          if(item.typeName == 'Return Label'){
+            this.returnLabelPhoto = base64Image
+          }else if(item.typeName == 'SKU'){
+            this.skuPhoto = base64Image
+          }else if(item.typeName == 'Damaged Area'){
+            this.damagedAreaPhoto = base64Image
+          }else if(item.typeName == 'Up front'){
+            this.upFrontPhoto = base64Image
+          }
         }
+      }
+      if(this.returnLabelPhoto && this.skuPhoto && this.damagedAreaPhoto && this.upFrontPhoto){
+        this.enableSaveBtn = true
+      }else{
+        this.enableSaveBtn = false
       }
      }, (err) => {
       // Handle error
@@ -377,7 +395,11 @@ export class ScanreturnsPage implements OnInit {
         "CreatedBy":this.userId,
         "Notes":this.notes,
         "LoggedInUserId":this.userId,
-        "isVanityArtUser": this.usertype
+        "isVanityArtUser": this.usertype,
+        "ReturnLabelPhoto": this.enableTakePhoto ? this.returnLabelPhoto : '',
+        "SkuPhoto": this.enableTakePhoto ? this.skuPhoto : '',
+        "DamagedAreaPhoto": this.enableTakePhoto ? this.damagedAreaPhoto : '',
+        "UpFrontPhoto": this.enableTakePhoto ? this.upFrontPhoto : ''
       }
       console.log(data);
       this.Vanityartservice.present();

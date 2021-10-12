@@ -166,6 +166,8 @@ export class ScanreturnsPage implements OnInit {
     this.itemReadOnly = true;
     this.enableSaveBtn = false;
     this.enableTakePhoto = false;
+    this.photoType = [{"typeName": "Return Label", "img": "../../assets/default-thumbnail.jpg"},{"typeName": "SKU", "img": "../../assets/default-thumbnail.jpg"},
+    {"typeName": "Damaged Area", "img": "../../assets/default-thumbnail.jpg"},{"typeName": "Up front", "img": "../../assets/default-thumbnail.jpg"}]
     if(this.isSerailScan){
       setTimeout(()=>{
         this.serial.setFocus();

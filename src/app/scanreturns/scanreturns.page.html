@@ -176,11 +176,24 @@
     </ion-row>
     <ion-row class="dropdown">
       <ion-col>
-        <ion-select  [(ngModel)]="condition">
+        <ion-select  [(ngModel)]="condition" (ionChange)="onConditionChange()">
           <ion-select-option *ngFor="let condition of conditionList" value="{{condition.value}}">{{condition.title}}</ion-select-option>
         </ion-select>
       </ion-col>
     </ion-row>
+    <ion-grid *ngIf="enableTakePhoto">
+      <ion-row *ngFor="let type of photoType" class="takePhotoGrid">
+        <ion-col size="4">
+          <ion-label style="color: rgb(28, 31, 31);" class="lab-font">{{type.typeName}}</ion-label>
+        </ion-col>
+        <ion-col size="4" style="text-align: center;">
+          <ion-button class="photobtn" (click)="takePhoto(type)">Take Photo</ion-button>
+        </ion-col>
+        <ion-col size="4" style="text-align: center;">
+          <img src="{{type.img}}" style="width: 25%;">
+        </ion-col>
+      </ion-row>
+    </ion-grid>
     <ion-item class="textfields">
       <ion-col>
         <ion-label style="color: rgb(28, 31, 31);" class="lab-font">Notes</ion-label>

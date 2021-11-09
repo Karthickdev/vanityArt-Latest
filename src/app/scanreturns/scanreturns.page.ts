@@ -351,12 +351,21 @@ export class ScanreturnsPage implements OnInit {
   }
 
   async takePhoto(type) {
-    const tempImage = await this.camera.getPicture(this.cameraOptions);
-    const tempFilename = tempImage.substr(tempImage.lastIndexOf('/') + 1);
-    const tempBaseFilesystemPath = tempImage.substr(0, tempImage.lastIndexOf('/') + 1);
-    const newBaseFilesystemPath = this.file.dataDirectory;
+    var tempImage = await this.camera.getPicture(this.cameraOptions);
+    var tempFilename = tempImage.substr(tempImage.lastIndexOf('/') + 1);
+    var tempBaseFilesystemPath = tempImage.substr(0, tempImage.lastIndexOf('/') + 1);
+    var newBaseFilesystemPath = this.file.dataDirectory;
     await this.file.copyFile(tempBaseFilesystemPath, tempFilename, newBaseFilesystemPath, tempFilename);
-    const storedPhoto = newBaseFilesystemPath + tempFilename;
+    var storedPhoto = newBaseFilesystemPath + tempFilename;
+    if(type.typeName == 'Return Label'){
+      this.returnLabelPhoto = storedPhoto
+    }else if(type.typeName == 'SKU'){
+      this.skuPhoto = storedPhoto
+    }else if(type.typeName == 'Damaged Area'){
+      this.damagedAreaPhoto = storedPhoto
+    }else{
+      this.upFrontPhoto = storedPhoto
+    }
     this.returnImages.push(storedPhoto);
     this.enableSaveBtn = true
     // this.camera.getPicture(this.cameraOptions).then((imageData) => {
@@ -486,9 +495,13 @@ export class ScanreturnsPage implements OnInit {
     formData.append("Notes", this.notes);
     formData.append("LoggedInUserId", this.userId);
     formData.append("isVanityArtUser", this.usertype);
-    for (let img of this.returnImages) {
-      formData.append("returnAppImages", img);
-    }
+    formData.append("returnAppImages", this.returnLabelPhoto);
+    formData.append("returnAppImages", this.skuPhoto);
+    formData.append("returnAppImages", this.damagedAreaPhoto);
+    formData.append("returnAppImages", this.upFrontPhoto);
+    // for (let img of this.returnImages) {
+    //   formData.append("returnAppImages", img);
+    // }
 
     let url = this.Vanityartservice.baseUrl + this.Vanityartservice.save;
     this.http.post(url, formData, httpOptions).subscribe(res => {

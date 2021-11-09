@@ -5,7 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Keyboard } from '@ionic-native/keyboard/ngx';
 import { IonContent, AlertController, IonRouterOutlet } from '@ionic/angular';
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
-//import { File } from '@ionic-native/file/ngx';
+import { File } from '@ionic-native/file/ngx';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Component({
@@ -344,25 +344,11 @@ export class ScanreturnsPage implements OnInit {
     
     if (this.condition == "20" || this.condition == "30") {
       this.enableTakePhoto = true
-     // this.enableSaveBtn = false
-     this.enableSaveBtn = true
+      this.enableSaveBtn = false
     } else {
       this.enableTakePhoto = false
       this.enableSaveBtn = true
     }
-  }
-
-  async testAlert(path){
-    let alert = await this.alertCtrl.create({
-      message: path,
-      buttons: [
-        {
-          text: "OK",
-          handler: ()=>{}
-        }
-      ]
-    });
-    alert.present();
   }
 
   async takePhoto(type) {
@@ -385,7 +371,7 @@ export class ScanreturnsPage implements OnInit {
     // this.returnImages.push(storedPhoto);
     // this.enableSaveBtn = true
 
-
+    const writeDirectory = this.file.externalDataDirectory
     this.camera.getPicture(this.cameraOptions).then((imageData) => {
       let base64Image = imageData;
       for(let item of this.photoType){
@@ -394,19 +380,19 @@ export class ScanreturnsPage implements OnInit {
           if(item.typeName = 'Return Label'){
             item.isCaptured = true
             let returnBlob = this.dataURItoBlob(imageData);
-            this.returnLabelPhoto = new File([returnBlob], 'returnlabel', { type: 'image/jpeg' });
+            this.returnLabelPhoto = this.file.writeFile(writeDirectory, 'returnlabel.jpeg', returnBlob, {replace: true});
           }else if(item.typeName = 'SKU'){
             item.isCaptured = true
             let skuBlob = this.dataURItoBlob(imageData);
-            this.skuPhoto = new File([skuBlob], 'sku', { type: 'image/jpeg' });
+            this.skuPhoto = this.file.writeFile(writeDirectory, 'skulabel.jpeg', skuBlob, {replace: true});
           }else if(item.typeName = 'Damaged Area'){
             item.isCaptured = true
             let damagedBlob = this.dataURItoBlob(imageData);
-            this.damagedAreaPhoto = new File([damagedBlob], 'damagedArea', { type: 'image/jpeg' });
+            this.damagedAreaPhoto = this.file.writeFile(writeDirectory, 'damagedArea.jpeg', damagedBlob, {replace: true});
           }else if(item.typeName == 'Up front'){
             item.isCaptured = true
             let upFrontBlob = this.dataURItoBlob(imageData);
-            this.upFrontPhoto = new File([upFrontBlob], 'damagedArea', { type: 'image/jpeg' });
+            this.upFrontPhoto = this.file.writeFile(writeDirectory, 'upFront.jpeg', upFrontBlob, {replace: true});
           }
         }
       }

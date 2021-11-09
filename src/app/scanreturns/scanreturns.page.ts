@@ -5,7 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Keyboard } from '@ionic-native/keyboard/ngx';
 import { IonContent, AlertController, IonRouterOutlet } from '@ionic/angular';
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
-import { File } from '@ionic-native/file/ngx';
+//import { File } from '@ionic-native/file/ngx';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Component({
@@ -49,9 +49,9 @@ export class ScanreturnsPage implements OnInit {
   returnImages: any[] = [];
   cameraOptions: CameraOptions = {
     quality: 20,
-    destinationType: this.camera.DestinationType.FILE_URI,
+    destinationType: this.camera.DestinationType.DATA_URL,
     encodingType: this.camera.EncodingType.JPEG,
-    //mediaType: this.camera.MediaType.PICTURE
+    mediaType: this.camera.MediaType.PICTURE
   }
   constructor(private formBuilder: FormBuilder, private Vanityartservice: ApiserviceService, private route: Router, private keyboard: Keyboard,
     private activatedRoute: ActivatedRoute, private alertCtrl: AlertController, private routerOutlet: IonRouterOutlet, private camera: Camera, private file: File,
@@ -366,75 +366,107 @@ export class ScanreturnsPage implements OnInit {
   }
 
   async takePhoto(type) {
-    var tempImage = await this.camera.getPicture(this.cameraOptions);
-    var tempFilename = tempImage.substr(tempImage.lastIndexOf('/') + 1);
-    var tempBaseFilesystemPath = tempImage.substr(0, tempImage.lastIndexOf('/') + 1);
-    var newBaseFilesystemPath = this.file.dataDirectory;
-    await this.file.copyFile(tempBaseFilesystemPath, tempFilename, newBaseFilesystemPath, tempFilename);
-    var storedPhoto = newBaseFilesystemPath + tempFilename;
-    this.testAlert(storedPhoto);
-    if(type.typeName == 'Return Label'){
-      this.returnLabelPhoto = storedPhoto
-    }else if(type.typeName == 'SKU'){
-      this.skuPhoto = storedPhoto
-    }else if(type.typeName == 'Damaged Area'){
-      this.damagedAreaPhoto = storedPhoto
-    }else{
-      this.upFrontPhoto = storedPhoto
-    }
-    this.returnImages.push(storedPhoto);
-    this.enableSaveBtn = true
-    // this.camera.getPicture(this.cameraOptions).then((imageData) => {
-      // let base64Image = tempImage;
-      // for(let item of this.photoType){
-      //   if(item.typeName == type.typeName){
-      //     item.img = 'data:image/jpeg;base64,' + base64Image
-      //     if(item.typeName == 'Return Label'){
-      //       item.isCaptured = true
-      //      this.returnLabelPhoto = {
-      //        "fileName": "retunLabel",
-      //        "imageData": base64Image,
-      //        "fileExtension": "jpeg"
-      //      }
-      //     }else if(item.typeName == 'SKU'){
-      //       item.isCaptured = true
-      //       this.skuPhoto = {
-      //         "fileName": "skuPhoto",
-      //         "imageData": base64Image,
-      //         "fileExtension": "jpeg"
-      //       }
-      //     }else if(item.typeName == 'Damaged Area'){
-      //       item.isCaptured = true
-      //      this.damagedAreaPhoto = {
-      //       "fileName": "damagedAreaPhoto",
-      //       "imageData": base64Image,
-      //       "fileExtension": "jpeg"
-      //     }
-      //     }else if(item.typeName == 'Up front'){
-      //       item.isCaptured = true
-      //      this.upFrontPhoto = {
-      //       "fileName": "upFrontPhoto",
-      //       "imageData": base64Image,
-      //       "fileExtension": "jpeg"
-      //     }
-      //     }
-      //   }
+    // var tempImage = await this.camera.getPicture(this.cameraOptions);
+    // var tempFilename = tempImage.substr(tempImage.lastIndexOf('/') + 1);
+    // var tempBaseFilesystemPath = tempImage.substr(0, tempImage.lastIndexOf('/') + 1);
+    // var newBaseFilesystemPath = this.file.dataDirectory;
+    // await this.file.copyFile(tempBaseFilesystemPath, tempFilename, newBaseFilesystemPath, tempFilename);
+    // var storedPhoto = newBaseFilesystemPath + tempFilename;
+    // this.testAlert(storedPhoto);
+    // if(type.typeName == 'Return Label'){
+    //   this.returnLabelPhoto = storedPhoto
+    // }else if(type.typeName == 'SKU'){
+    //   this.skuPhoto = storedPhoto
+    // }else if(type.typeName == 'Damaged Area'){
+    //   this.damagedAreaPhoto = storedPhoto
+    // }else{
+    //   this.upFrontPhoto = storedPhoto
+    // }
+    // this.returnImages.push(storedPhoto);
+    // this.enableSaveBtn = true
+
+
+    this.camera.getPicture(this.cameraOptions).then((imageData) => {
+      let base64Image = imageData;
+      for(let item of this.photoType){
+        if(item.typeName == type.typeName){
+          item.img = 'data:image/jpeg;base64,' + base64Image
+          if(item.typeName = 'Return Label'){
+            item.isCaptured = true
+            let returnBlob = this.dataURItoBlob(imageData);
+            this.returnLabelPhoto = new File([returnBlob], 'returnlabel', { type: 'image/jpeg' });
+          }else if(item.typeName = 'SKU'){
+            item.isCaptured = true
+            let skuBlob = this.dataURItoBlob(imageData);
+            this.skuPhoto = new File([skuBlob], 'sku', { type: 'image/jpeg' });
+          }else if(item.typeName = 'Damaged Area'){
+            item.isCaptured = true
+            let damagedBlob = this.dataURItoBlob(imageData);
+            this.damagedAreaPhoto = new File([damagedBlob], 'damagedArea', { type: 'image/jpeg' });
+          }else if(item.typeName == 'Up front'){
+            item.isCaptured = true
+            let upFrontBlob = this.dataURItoBlob(imageData);
+            this.upFrontPhoto = new File([upFrontBlob], 'damagedArea', { type: 'image/jpeg' });
+          }
+        }
+      }
+
+       let checkCaptured = this.photoType.filter(i => i.isCaptured == false)
+       if(checkCaptured.length > 0){
+         this.enableSaveBtn = false
+       }else{
+         this.enableSaveBtn = true
+       }
+      // if(this.returnLabelPhoto && this.skuPhoto && this.damagedAreaPhoto && this.upFrontPhoto){
+      //   this.enableSaveBtn = true
+      // }else{
+      //   this.enableSaveBtn = false
       // }
-      //  let checkCaptured = this.photoType.filter(i => i.isCaptured == false)
-      //  if(checkCaptured.length > 0){
-      //    this.enableSaveBtn = false
-      //  }else{
-      //    this.enableSaveBtn = true
-      //  }
-    //   // if(this.returnLabelPhoto && this.skuPhoto && this.damagedAreaPhoto && this.upFrontPhoto){
-    //   //   this.enableSaveBtn = true
-    //   // }else{
-    //   //   this.enableSaveBtn = false
-    //   // }
-    //  }, (err) => {
-    //   // Handle error
-    //  });
+     }, (err) => {
+      // Handle error
+     });
   }
+
+  dataURItoBlob(dataURI){
+    const byteString = window.atob(dataURI);
+    const arrayBuffer = new ArrayBuffer(byteString.length);
+    const int8Array = new Uint8Array(arrayBuffer);
+    for (let i = 0; i < byteString.length; i++) {
+      int8Array[i] = byteString.charCodeAt(i);
+    }
+    const blob = new Blob([int8Array], { type: 'image/jpeg' });    
+  return blob;
+  }
+
+  // if(item.typeName == 'Return Label'){
+  //   item.isCaptured = true
+  //  this.returnLabelPhoto = {
+  //    "fileName": "retunLabel",
+  //    "imageData": base64Image,
+  //    "fileExtension": "jpeg"
+  //  }
+  // }else if(item.typeName == 'SKU'){
+  //   item.isCaptured = true
+  //   this.skuPhoto = {
+  //     "fileName": "skuPhoto",
+  //     "imageData": base64Image,
+  //     "fileExtension": "jpeg"
+  //   }
+  // }else if(item.typeName == 'Damaged Area'){
+  //   item.isCaptured = true
+  //  this.damagedAreaPhoto = {
+  //   "fileName": "damagedAreaPhoto",
+  //   "imageData": base64Image,
+  //   "fileExtension": "jpeg"
+  // }
+  // }else if(item.typeName == 'Up front'){
+  //   item.isCaptured = true
+  //  this.upFrontPhoto = {
+  //   "fileName": "upFrontPhoto",
+  //   "imageData": base64Image,
+  //   "fileExtension": "jpeg"
+  // }
+  // }
 
   // async saveReturn(){
   //     let url = this.Vanityartservice.baseUrl+this.Vanityartservice.save;
@@ -485,11 +517,11 @@ export class ScanreturnsPage implements OnInit {
 
   async saveReturn() {
     let serialNo = this.isSerailScan ? this.serialScanning.controls['serial'].value.toUpperCase() : '';
-    const httpOptions = {
-      headers: new HttpHeaders({
-        "mimeType": "multipart/form-data"
-      })
-    };
+    // const httpOptions = {
+    //   headers: new HttpHeaders({
+    //     "mimeType": "multipart/form-data"
+    //   })
+    // };
     const formData = new FormData();
     formData.append("serialNumber", serialNo);
     formData.append("purchaseOrderNumber", this.respData['purchaseOrderNumber']);
@@ -521,7 +553,7 @@ export class ScanreturnsPage implements OnInit {
     // }
 
     let url = this.Vanityartservice.baseUrl + this.Vanityartservice.save;
-    this.http.post(url, formData, httpOptions).subscribe(res => {
+    this.http.post(url, formData).subscribe(res => {
       if (res['status'] == "Success") {
         this.Vanityartservice.dismiss();
         this.Vanityartservice.PresentToast('Item return saved successfully.', 'success');

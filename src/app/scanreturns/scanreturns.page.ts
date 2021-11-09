@@ -341,9 +341,11 @@ export class ScanreturnsPage implements OnInit {
   }
 
   onConditionChange() {
+    
     if (this.condition == "20" || this.condition == "30") {
       this.enableTakePhoto = true
-      this.enableSaveBtn = false
+     // this.enableSaveBtn = false
+     this.enableSaveBtn = true
     } else {
       this.enableTakePhoto = false
       this.enableSaveBtn = true
@@ -485,7 +487,7 @@ export class ScanreturnsPage implements OnInit {
     let serialNo = this.isSerailScan ? this.serialScanning.controls['serial'].value.toUpperCase() : '';
     const httpOptions = {
       headers: new HttpHeaders({
-        "Content-Type": "multipart/form-data"
+        "mimeType": "multipart/form-data"
       })
     };
     const formData = new FormData();

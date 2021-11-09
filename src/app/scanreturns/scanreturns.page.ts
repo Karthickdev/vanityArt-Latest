@@ -371,7 +371,7 @@ export class ScanreturnsPage implements OnInit {
     // this.returnImages.push(storedPhoto);
     // this.enableSaveBtn = true
 
-    const writeDirectory = this.file.externalDataDirectory
+    
     this.camera.getPicture(this.cameraOptions).then((imageData) => {
       let base64Image = imageData;
       for(let item of this.photoType){
@@ -379,20 +379,20 @@ export class ScanreturnsPage implements OnInit {
           item.img = 'data:image/jpeg;base64,' + base64Image
           if(item.typeName = 'Return Label'){
             item.isCaptured = true
-            let returnBlob = this.dataURItoBlob(imageData);
-            this.returnLabelPhoto = this.file.writeFile(writeDirectory, 'returnlabel.jpeg', returnBlob, {replace: true});
+            let returnBlob = this.dataURItoBlob(imageData, 'image/jpeg');
+            this.writeFile('returnlabel', returnBlob);
           }else if(item.typeName = 'SKU'){
             item.isCaptured = true
-            let skuBlob = this.dataURItoBlob(imageData);
-            this.skuPhoto = this.file.writeFile(writeDirectory, 'skulabel.jpeg', skuBlob, {replace: true});
+            let skuBlob = this.dataURItoBlob(imageData, 'image/jpeg');
+            this.writeFile('sku', skuBlob);
           }else if(item.typeName = 'Damaged Area'){
             item.isCaptured = true
-            let damagedBlob = this.dataURItoBlob(imageData);
-            this.damagedAreaPhoto = this.file.writeFile(writeDirectory, 'damagedArea.jpeg', damagedBlob, {replace: true});
+            let damagedBlob = this.dataURItoBlob(imageData, 'image/jpeg');
+            this.writeFile('damaged', damagedBlob);
           }else if(item.typeName == 'Up front'){
             item.isCaptured = true
-            let upFrontBlob = this.dataURItoBlob(imageData);
-            this.upFrontPhoto = this.file.writeFile(writeDirectory, 'upFront.jpeg', upFrontBlob, {replace: true});
+            let upFrontBlob = this.dataURItoBlob(imageData, 'image/jpeg');
+            this.writeFile('upfront', upFrontBlob);
           }
         }
       }
@@ -413,15 +413,38 @@ export class ScanreturnsPage implements OnInit {
      });
   }
 
-  dataURItoBlob(dataURI){
-    const byteString = window.atob(dataURI);
-    const arrayBuffer = new ArrayBuffer(byteString.length);
-    const int8Array = new Uint8Array(arrayBuffer);
-    for (let i = 0; i < byteString.length; i++) {
-      int8Array[i] = byteString.charCodeAt(i);
+  dataURItoBlob(b64Data, contentType): Blob{
+    contentType = contentType || '';
+    const sliceSize = 512;
+    b64Data = b64Data.replace(/^[^,]+,/, '');
+    b64Data = b64Data.replace(/\s/g, '');
+    const byteCharacters = window.atob(b64Data);
+    const byteArrays = [];
+    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+         const slice = byteCharacters.slice(offset, offset + sliceSize);
+         const byteNumbers = new Array(slice.length);
+         for (let i = 0; i < slice.length; i++) {
+             byteNumbers[i] = slice.charCodeAt(i);
+         }
+         const byteArray = new Uint8Array(byteNumbers);
+         byteArrays.push(byteArray);
     }
-    const blob = new Blob([int8Array], { type: 'image/jpeg' });    
-  return blob;
+   return new Blob(byteArrays, {type: contentType});
+  }
+
+  writeFile(fileName, blob){
+    const writeDirectory = this.file.externalDataDirectory
+    this.file.writeFile(writeDirectory, fileName +'.jpeg', blob, {replace: true}).then(()=>{
+      if(fileName == 'returnLabel'){
+        this.returnLabelPhoto = writeDirectory + 'returnLabel.jpeg';
+      }else if(fileName == 'sku'){
+        this.skuPhoto = writeDirectory + 'sku.jpeg'
+      }else if(fileName == 'damaged'){
+        this.damagedAreaPhoto = writeDirectory + 'damaged.jpeg'
+      }else if(fileName == 'upfront'){
+        this.upFrontPhoto = writeDirectory + 'upfront.jpeg'
+      }
+    });
   }
 
   // if(item.typeName == 'Return Label'){
@@ -502,6 +525,7 @@ export class ScanreturnsPage implements OnInit {
   //   }
 
   async saveReturn() {
+    this.Vanityartservice.present();
     let serialNo = this.isSerailScan ? this.serialScanning.controls['serial'].value.toUpperCase() : '';
     // const httpOptions = {
     //   headers: new HttpHeaders({

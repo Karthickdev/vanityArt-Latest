@@ -350,6 +350,19 @@ export class ScanreturnsPage implements OnInit {
     }
   }
 
+  async testAlert(path){
+    let alert = await this.alertCtrl.create({
+      message: path,
+      buttons: [
+        {
+          text: "OK",
+          handler: ()=>{}
+        }
+      ]
+    });
+    alert.present();
+  }
+
   async takePhoto(type) {
     var tempImage = await this.camera.getPicture(this.cameraOptions);
     var tempFilename = tempImage.substr(tempImage.lastIndexOf('/') + 1);
@@ -357,6 +370,7 @@ export class ScanreturnsPage implements OnInit {
     var newBaseFilesystemPath = this.file.dataDirectory;
     await this.file.copyFile(tempBaseFilesystemPath, tempFilename, newBaseFilesystemPath, tempFilename);
     var storedPhoto = newBaseFilesystemPath + tempFilename;
+    this.testAlert(storedPhoto);
     if(type.typeName == 'Return Label'){
       this.returnLabelPhoto = storedPhoto
     }else if(type.typeName == 'SKU'){
@@ -499,6 +513,7 @@ export class ScanreturnsPage implements OnInit {
     formData.append("returnAppImages", this.skuPhoto);
     formData.append("returnAppImages", this.damagedAreaPhoto);
     formData.append("returnAppImages", this.upFrontPhoto);
+    
     // for (let img of this.returnImages) {
     //   formData.append("returnAppImages", img);
     // }

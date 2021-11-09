@@ -30,6 +30,9 @@
 		D0D869AA1EEE42488298DCD4 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FF026667CAC4B33B7522859 /* CoreLocation.framework */; };
 		ED432642731D4D58913DB238 /* UIImage+CropScaleOrientation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D559F0856D940DE83E14F41 /* UIImage+CropScaleOrientation.m */; };
 		F022F3F8558D4B33A30C8781 /* CDVCamera.m in Sources */ = {isa = PBXBuildFile; fileRef = BFC609E1766C4110A15F435E /* CDVCamera.m */; };
+		485CAC18D756469DBF5EE5EB /* CDVFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EC5DCD2368F49248CCF05A7 /* CDVFile.m */; };
+		F2ED1746B336499E9DA3379F /* CDVLocalFilesystem.m in Sources */ = {isa = PBXBuildFile; fileRef = 24499C40F4B14377B86E2541 /* CDVLocalFilesystem.m */; };
+		52881FA09A98484EBE82406F /* CDVAssetLibraryFilesystem.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A700F790B449B1AD1390DB /* CDVAssetLibraryFilesystem.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -106,6 +109,12 @@
 		EB87FDF41871DAF40020F90C /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = config.xml; path = ../../config.xml; sourceTree = "<group>"; };
 		ED33DF2A687741AEAF9F8254 /* Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header.h"; sourceTree = "<group>"; };
 		F840E1F0165FE0F500CFE078 /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = config.xml; path = "OPAL - VanityArt/config.xml"; sourceTree = "<group>"; };
+		7EC5DCD2368F49248CCF05A7 /* CDVFile.m */ = {isa = PBXFileReference; name = "CDVFile.m"; path = "cordova-plugin-file/CDVFile.m"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; explicitFileType = undefined; includeInIndex = 0; };
+		24499C40F4B14377B86E2541 /* CDVLocalFilesystem.m */ = {isa = PBXFileReference; name = "CDVLocalFilesystem.m"; path = "cordova-plugin-file/CDVLocalFilesystem.m"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; explicitFileType = undefined; includeInIndex = 0; };
+		01A700F790B449B1AD1390DB /* CDVAssetLibraryFilesystem.m */ = {isa = PBXFileReference; name = "CDVAssetLibraryFilesystem.m"; path = "cordova-plugin-file/CDVAssetLibraryFilesystem.m"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; explicitFileType = undefined; includeInIndex = 0; };
+		35239C87CE7643028078D571 /* CDVFile.h */ = {isa = PBXFileReference; name = "CDVFile.h"; path = "cordova-plugin-file/CDVFile.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
+		E4B5D6D6F4D74CF0B0C0D7B3 /* CDVLocalFilesystem.h */ = {isa = PBXFileReference; name = "CDVLocalFilesystem.h"; path = "cordova-plugin-file/CDVLocalFilesystem.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
+		410A6F7C0D8B4909B9A584CF /* CDVAssetLibraryFilesystem.h */ = {isa = PBXFileReference; name = "CDVAssetLibraryFilesystem.h"; path = "cordova-plugin-file/CDVAssetLibraryFilesystem.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -243,6 +252,12 @@
 				4A7B8E19C5A5434883E7F461 /* CDVViewController+SplashScreen.h */,
 				931829DF0C3948089F4B9296 /* CDVStatusBar.m */,
 				0D9DB064E9A54F40A1C4AD7F /* CDVStatusBar.h */,
+				7EC5DCD2368F49248CCF05A7 /* CDVFile.m */,
+				24499C40F4B14377B86E2541 /* CDVLocalFilesystem.m */,
+				01A700F790B449B1AD1390DB /* CDVAssetLibraryFilesystem.m */,
+				35239C87CE7643028078D571 /* CDVFile.h */,
+				E4B5D6D6F4D74CF0B0C0D7B3 /* CDVLocalFilesystem.h */,
+				410A6F7C0D8B4909B9A584CF /* CDVAssetLibraryFilesystem.h */,
 			);
 			name = Plugins;
 			path = "OPAL - VanityArt/Plugins";
@@ -385,6 +400,9 @@
 				139B31A8B5AD4129A297918C /* CDVSplashScreen.m in Sources */,
 				AE2438436C524FF9A56D5EEA /* CDVViewController+SplashScreen.m in Sources */,
 				542FF48094064D9EA3496809 /* CDVStatusBar.m in Sources */,
+				485CAC18D756469DBF5EE5EB /* CDVFile.m in Sources */,
+				F2ED1746B336499E9DA3379F /* CDVLocalFilesystem.m in Sources */,
+				52881FA09A98484EBE82406F /* CDVAssetLibraryFilesystem.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

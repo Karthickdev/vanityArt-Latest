@@ -379,19 +379,19 @@ export class ScanreturnsPage implements OnInit {
           item.img = 'data:image/jpeg;base64,' + base64Image
           if(item.typeName = 'Return Label'){
             item.isCaptured = true
-            let returnBlob = this.dataURItoBlob(imageData, 'image/jpeg');
+            let returnBlob = this.dataURItoBlob(imageData);
             this.writeFile('returnlabel', returnBlob);
           }else if(item.typeName = 'SKU'){
             item.isCaptured = true
-            let skuBlob = this.dataURItoBlob(imageData, 'image/jpeg');
+            let skuBlob = this.dataURItoBlob(imageData);
             this.writeFile('sku', skuBlob);
           }else if(item.typeName = 'Damaged Area'){
             item.isCaptured = true
-            let damagedBlob = this.dataURItoBlob(imageData, 'image/jpeg');
+            let damagedBlob = this.dataURItoBlob(imageData);
             this.writeFile('damaged', damagedBlob);
           }else if(item.typeName == 'Up front'){
             item.isCaptured = true
-            let upFrontBlob = this.dataURItoBlob(imageData, 'image/jpeg');
+            let upFrontBlob = this.dataURItoBlob(imageData);
             this.writeFile('upfront', upFrontBlob);
           }
         }
@@ -413,23 +413,15 @@ export class ScanreturnsPage implements OnInit {
      });
   }
 
-  dataURItoBlob(b64Data, contentType): Blob{
-    contentType = contentType || '';
-    const sliceSize = 512;
-    b64Data = b64Data.replace(/^[^,]+,/, '');
-    b64Data = b64Data.replace(/\s/g, '');
-    const byteCharacters = window.atob(b64Data);
-    const byteArrays = [];
-    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-         const slice = byteCharacters.slice(offset, offset + sliceSize);
-         const byteNumbers = new Array(slice.length);
-         for (let i = 0; i < slice.length; i++) {
-             byteNumbers[i] = slice.charCodeAt(i);
-         }
-         const byteArray = new Uint8Array(byteNumbers);
-         byteArrays.push(byteArray);
-    }
-   return new Blob(byteArrays, {type: contentType});
+  dataURItoBlob(dataURI): Blob{
+    const byteString = window.atob(dataURI);
+  const arrayBuffer = new ArrayBuffer(byteString.length);
+  const int8Array = new Uint8Array(arrayBuffer);
+  for (let i = 0; i < byteString.length; i++) {
+    int8Array[i] = byteString.charCodeAt(i);
+   }
+  const blob = new Blob([int8Array], { type: 'image/jpeg' });    
+ return blob;
   }
 
   writeFile(fileName, blob){
@@ -529,7 +521,7 @@ export class ScanreturnsPage implements OnInit {
     let serialNo = this.isSerailScan ? this.serialScanning.controls['serial'].value.toUpperCase() : '';
     // const httpOptions = {
     //   headers: new HttpHeaders({
-    //     "mimeType": "multipart/form-data"
+    //     'Content-Type': 'multipart/form-data'
     //   })
     // };
     const formData = new FormData();

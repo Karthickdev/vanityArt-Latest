@@ -378,15 +378,15 @@ export class ScanreturnsPage implements OnInit {
       for(let item of this.photoType){
         if(item.typeName == type.typeName){
           item.img = 'data:image/jpeg;base64,' + base64Image
-          if(item.typeName = 'Return Label'){
+          if(item.typeName == 'Return Label'){
             item.isCaptured = true
             this.returnLabelPhoto = this.dataURItoBlob(base64Image);
             //this.writeFile('returnlabel', returnBlob);
-          }else if(item.typeName = 'SKU'){
+          }else if(item.typeName == 'SKU'){
             item.isCaptured = true
             this.skuPhoto = this.dataURItoBlob(base64Image);
             //this.writeFile('sku', skuBlob);
-          }else if(item.typeName = 'Damaged Area'){
+          }else if(item.typeName == 'Damaged Area'){
             item.isCaptured = true
             this.damagedAreaPhoto = this.dataURItoBlob(base64Image);
             //this.writeFile('damaged', damagedBlob);

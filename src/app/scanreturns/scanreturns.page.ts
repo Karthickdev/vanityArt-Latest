@@ -345,7 +345,7 @@ export class ScanreturnsPage implements OnInit {
     
     if (this.condition == "20" || this.condition == "30") {
       this.enableTakePhoto = true
-      this.enableSaveBtn = false
+      this.enableSaveBtn = true
     } else {
       this.enableTakePhoto = false
       this.enableSaveBtn = true
@@ -354,10 +354,9 @@ export class ScanreturnsPage implements OnInit {
 
   takePicture(type) {
     this.camera.getPicture(this.cameraOptions).then((imageData) => {
-      let base64Image = imageData;
       for(let item of this.photoType){
         if(item.typeName == type.typeName){
-          item.img = 'data:image/jpeg;base64,' + base64Image
+          item.img = (<any>window).Ionic.WebView.convertFileSrc(imageData);
         }
       }
       this.file.resolveLocalFilesystemUrl(imageData).then((entry: FileEntry) => {

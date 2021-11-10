@@ -351,80 +351,66 @@ export class ScanreturnsPage implements OnInit {
     }
   }
 
-  async testAlert(img){
-    let alert = await this.alertCtrl.create({
-      message: img,
-      buttons:[
-        {
-          text: 'ok',
-          handler: ()=>{}
-        }
-      ]
-    });
-    alert.present();
-  }
-
   async takePhoto(type) {
-    var tempImage = await this.camera.getPicture(this.cameraOptions);
-    var tempFilename = tempImage.substr(tempImage.lastIndexOf('/') + 1);
-    var tempBaseFilesystemPath = tempImage.substr(0, tempImage.lastIndexOf('/') + 1);
-    var newBaseFilesystemPath = this.file.dataDirectory;
-    await this.file.copyFile(tempBaseFilesystemPath, tempFilename, newBaseFilesystemPath, tempFilename);
-    var storedPhoto = newBaseFilesystemPath + tempFilename;
-    var imageFile = this.file.getFile(tempBaseFilesystemPath, tempFilename, { create: false })
-    this.testAlert(imageFile);
-    // if(type.typeName == 'Return Label'){
-    //   this.returnLabelPhoto = imageFile
-    // }else if(type.typeName == 'SKU'){
-    //   this.skuPhoto = imageFile
-    // }else if(type.typeName == 'Damaged Area'){
-    //   this.damagedAreaPhoto = imageFile
-    // }else{
-    //   this.upFrontPhoto = imageFile
-    // }
-    this.returnImages.push(imageFile);
-    this.enableSaveBtn = true
+    // var tempImage = await this.camera.getPicture(this.cameraOptions);
+    // var tempFilename = tempImage.substr(tempImage.lastIndexOf('/') + 1);
+    // var tempBaseFilesystemPath = tempImage.substr(0, tempImage.lastIndexOf('/') + 1);
+    // var newBaseFilesystemPath = this.file.dataDirectory;
+    // await this.file.copyFile(tempBaseFilesystemPath, tempFilename, newBaseFilesystemPath, tempFilename);
+    // var storedPhoto = newBaseFilesystemPath + tempFilename;
+    // //var imageFile = this.file.getFile(tempBaseFilesystemPath, tempFilename, { create: false })
+    // // if(type.typeName == 'Return Label'){
+    // //   this.returnLabelPhoto = imageFile
+    // // }else if(type.typeName == 'SKU'){
+    // //   this.skuPhoto = imageFile
+    // // }else if(type.typeName == 'Damaged Area'){
+    // //   this.damagedAreaPhoto = imageFile
+    // // }else{
+    // //   this.upFrontPhoto = imageFile
+    // // }
+    // this.returnImages.push(storedPhoto);
+    // this.enableSaveBtn = true
 
     
-    // this.camera.getPicture(this.cameraOptions).then((imageData) => {
-    //   let base64Image = imageData;
-    //   for(let item of this.photoType){
-    //     if(item.typeName == type.typeName){
-    //       item.img = 'data:image/jpeg;base64,' + base64Image
-    //       // if(item.typeName = 'Return Label'){
-    //       //   item.isCaptured = true
-    //       //   let returnBlob = this.dataURItoBlob(imageData);
-    //       //   this.writeFile('returnlabel', returnBlob);
-    //       // }else if(item.typeName = 'SKU'){
-    //       //   item.isCaptured = true
-    //       //   let skuBlob = this.dataURItoBlob(imageData);
-    //       //   this.writeFile('sku', skuBlob);
-    //       // }else if(item.typeName = 'Damaged Area'){
-    //       //   item.isCaptured = true
-    //       //   let damagedBlob = this.dataURItoBlob(imageData);
-    //       //   this.writeFile('damaged', damagedBlob);
-    //       // }else if(item.typeName == 'Up front'){
-    //       //   item.isCaptured = true
-    //       //   let upFrontBlob = this.dataURItoBlob(imageData);
-    //       //   this.writeFile('upfront', upFrontBlob);
-    //       // }
-    //     }
-    //   }
+    this.camera.getPicture(this.cameraOptions).then((imageData) => {
+      let base64Image = imageData;
+      for(let item of this.photoType){
+        if(item.typeName == type.typeName){
+          item.img = 'data:image/jpeg;base64,' + base64Image
+          if(item.typeName = 'Return Label'){
+            item.isCaptured = true
+            let returnBlob = this.dataURItoBlob(imageData);
+            this.writeFile('returnlabel', returnBlob);
+          }else if(item.typeName = 'SKU'){
+            item.isCaptured = true
+            let skuBlob = this.dataURItoBlob(imageData);
+            this.writeFile('sku', skuBlob);
+          }else if(item.typeName = 'Damaged Area'){
+            item.isCaptured = true
+            let damagedBlob = this.dataURItoBlob(imageData);
+            this.writeFile('damaged', damagedBlob);
+          }else if(item.typeName == 'Up front'){
+            item.isCaptured = true
+            let upFrontBlob = this.dataURItoBlob(imageData);
+            this.writeFile('upfront', upFrontBlob);
+          }
+        }
+      }
 
-    //    let checkCaptured = this.photoType.filter(i => i.isCaptured == false)
-    //    if(checkCaptured.length > 0){
-    //      this.enableSaveBtn = false
-    //    }else{
-    //      this.enableSaveBtn = true
-    //    }
-    //   // if(this.returnLabelPhoto && this.skuPhoto && this.damagedAreaPhoto && this.upFrontPhoto){
-    //   //   this.enableSaveBtn = true
-    //   // }else{
-    //   //   this.enableSaveBtn = false
-    //   // }
-    //  }, (err) => {
-    //   // Handle error
-    //  });
+       let checkCaptured = this.photoType.filter(i => i.isCaptured == false)
+       if(checkCaptured.length > 0){
+         this.enableSaveBtn = false
+       }else{
+         this.enableSaveBtn = true
+       }
+      // if(this.returnLabelPhoto && this.skuPhoto && this.damagedAreaPhoto && this.upFrontPhoto){
+      //   this.enableSaveBtn = true
+      // }else{
+      //   this.enableSaveBtn = false
+      // }
+     }, (err) => {
+      // Handle error
+     });
   }
 
   dataURItoBlob(dataURI): Blob{
@@ -438,20 +424,20 @@ export class ScanreturnsPage implements OnInit {
  return blob;
   }
 
-  // writeFile(fileName, blob){
-  //   const writeDirectory = this.file.externalDataDirectory
-  //   this.file.writeFile(writeDirectory, fileName +'.jpeg', blob, {replace: true}).then(()=>{
-  //     if(fileName == 'returnLabel'){
-  //       this.returnLabelPhoto = writeDirectory + 'returnLabel.jpeg';
-  //     }else if(fileName == 'sku'){
-  //       this.skuPhoto = writeDirectory + 'sku.jpeg'
-  //     }else if(fileName == 'damaged'){
-  //       this.damagedAreaPhoto = writeDirectory + 'damaged.jpeg'
-  //     }else if(fileName == 'upfront'){
-  //       this.upFrontPhoto = writeDirectory + 'upfront.jpeg'
-  //     }
-  //   });
-  // }
+  writeFile(fileName, blob){
+    const writeDirectory = this.file.externalDataDirectory
+    this.file.writeFile(writeDirectory, fileName +'.jpeg', blob, {replace: true}).then(()=>{
+      if(fileName == 'returnLabel'){
+        this.returnLabelPhoto = writeDirectory + 'returnLabel.jpeg';
+      }else if(fileName == 'sku'){
+        this.skuPhoto = writeDirectory + 'sku.jpeg'
+      }else if(fileName == 'damaged'){
+        this.damagedAreaPhoto = writeDirectory + 'damaged.jpeg'
+      }else if(fileName == 'upfront'){
+        this.upFrontPhoto = writeDirectory + 'upfront.jpeg'
+      }
+    });
+  }
 
   // if(item.typeName == 'Return Label'){
   //   item.isCaptured = true
@@ -533,11 +519,6 @@ export class ScanreturnsPage implements OnInit {
   async saveReturn() {
     this.Vanityartservice.present();
     let serialNo = this.isSerailScan ? this.serialScanning.controls['serial'].value.toUpperCase() : '';
-    // const httpOptions = {
-    //   headers: new HttpHeaders({
-    //     'Content-Type': 'multipart/form-data'
-    //   })
-    // };
     const formData = new FormData();
     formData.append("serialNumber", serialNo);
     formData.append("purchaseOrderNumber", this.respData['purchaseOrderNumber']);
@@ -559,11 +540,6 @@ export class ScanreturnsPage implements OnInit {
     formData.append("Notes", this.notes);
     formData.append("LoggedInUserId", this.userId);
     formData.append("isVanityArtUser", this.usertype);
-    
-    
-    // for (let img of this.returnImages) {
-    //   formData.append("returnAppImages", img);
-    // }
 
     let url = this.Vanityartservice.baseUrl + this.Vanityartservice.save;
     this.http.post(url, formData).subscribe(res => {
@@ -593,9 +569,11 @@ export class ScanreturnsPage implements OnInit {
       })
     };
     const data = new FormData();
-    for(let img of this.returnImages){
-      data.append("returnAppImages", img);
-    }
+    data.append("returnAppImages", this.returnLabelPhoto);
+    data.append("returnAppImages", this.skuPhoto);
+    data.append("returnAppImages", this.damagedAreaPhoto);
+    data.append("returnAppImages", this.upFrontPhoto);
+    
    
 
     let url = this.Vanityartservice.baseUrl + this.Vanityartservice.sendEmail+this.respData['purchaseOrderNumber']+'/'+this.respData['itemUpc']+'/'+serialNo+

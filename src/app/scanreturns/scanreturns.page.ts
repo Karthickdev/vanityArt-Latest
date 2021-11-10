@@ -351,6 +351,19 @@ export class ScanreturnsPage implements OnInit {
     }
   }
 
+  async testAlert(img){
+    let alert = await this.alertCtrl.create({
+      message: img,
+      buttons:[
+        {
+          text: 'ok',
+          handler: ()=>{}
+        }
+      ]
+    });
+    alert.present();
+  }
+
   async takePhoto(type) {
     var tempImage = await this.camera.getPicture(this.cameraOptions);
     var tempFilename = tempImage.substr(tempImage.lastIndexOf('/') + 1);
@@ -359,6 +372,7 @@ export class ScanreturnsPage implements OnInit {
     await this.file.copyFile(tempBaseFilesystemPath, tempFilename, newBaseFilesystemPath, tempFilename);
     var storedPhoto = newBaseFilesystemPath + tempFilename;
     var imageFile = this.file.getFile(tempBaseFilesystemPath, tempFilename, { create: false })
+    this.testAlert(imageFile);
     // if(type.typeName == 'Return Label'){
     //   this.returnLabelPhoto = imageFile
     // }else if(type.typeName == 'SKU'){
@@ -587,6 +601,7 @@ export class ScanreturnsPage implements OnInit {
     let url = this.Vanityartservice.baseUrl + this.Vanityartservice.sendEmail+this.respData['purchaseOrderNumber']+'/'+this.respData['itemUpc']+'/'+serialNo+
     '/'+parseInt(this.condition)+'/'+this.warehouse+'/'+this.userId+'/'+this.respData['isOpalOrder']+'/'+this.respData['isVanityArtOrder']+'/'+this.usertype;
     this.http.post(url, data, httpOptions).subscribe(res =>{
+      console.log(res);
       this.Vanityartservice.dismiss();
         this.formreset();
     },err =>{

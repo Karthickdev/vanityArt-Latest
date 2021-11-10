@@ -49,9 +49,9 @@ export class ScanreturnsPage implements OnInit {
   returnImages: any[] = [];
   cameraOptions: CameraOptions = {
     quality: 20,
-    destinationType: this.camera.DestinationType.DATA_URL,
+    destinationType: this.camera.DestinationType.FILE_URI,
     encodingType: this.camera.EncodingType.JPEG,
-    mediaType: this.camera.MediaType.PICTURE
+   // mediaType: this.camera.MediaType.PICTURE
   }
   constructor(private formBuilder: FormBuilder, private Vanityartservice: ApiserviceService, private route: Router, private keyboard: Keyboard,
     private activatedRoute: ActivatedRoute, private alertCtrl: AlertController, private routerOutlet: IonRouterOutlet, private camera: Camera, private file: File,
@@ -358,16 +358,17 @@ export class ScanreturnsPage implements OnInit {
     var newBaseFilesystemPath = this.file.dataDirectory;
     await this.file.copyFile(tempBaseFilesystemPath, tempFilename, newBaseFilesystemPath, tempFilename);
     var storedPhoto = newBaseFilesystemPath + tempFilename;
-    if(type.typeName == 'Return Label'){
-      this.returnLabelPhoto = storedPhoto
-    }else if(type.typeName == 'SKU'){
-      this.skuPhoto = storedPhoto
-    }else if(type.typeName == 'Damaged Area'){
-      this.damagedAreaPhoto = storedPhoto
-    }else{
-      this.upFrontPhoto = storedPhoto
-    }
-    this.returnImages.push(storedPhoto);
+    var imageFile = this.file.getFile(tempBaseFilesystemPath, tempFilename, { create: false })
+    // if(type.typeName == 'Return Label'){
+    //   this.returnLabelPhoto = imageFile
+    // }else if(type.typeName == 'SKU'){
+    //   this.skuPhoto = imageFile
+    // }else if(type.typeName == 'Damaged Area'){
+    //   this.damagedAreaPhoto = imageFile
+    // }else{
+    //   this.upFrontPhoto = imageFile
+    // }
+    this.returnImages.push(imageFile);
     this.enableSaveBtn = true
 
     
@@ -423,20 +424,20 @@ export class ScanreturnsPage implements OnInit {
  return blob;
   }
 
-  writeFile(fileName, blob){
-    const writeDirectory = this.file.externalDataDirectory
-    this.file.writeFile(writeDirectory, fileName +'.jpeg', blob, {replace: true}).then(()=>{
-      if(fileName == 'returnLabel'){
-        this.returnLabelPhoto = writeDirectory + 'returnLabel.jpeg';
-      }else if(fileName == 'sku'){
-        this.skuPhoto = writeDirectory + 'sku.jpeg'
-      }else if(fileName == 'damaged'){
-        this.damagedAreaPhoto = writeDirectory + 'damaged.jpeg'
-      }else if(fileName == 'upfront'){
-        this.upFrontPhoto = writeDirectory + 'upfront.jpeg'
-      }
-    });
-  }
+  // writeFile(fileName, blob){
+  //   const writeDirectory = this.file.externalDataDirectory
+  //   this.file.writeFile(writeDirectory, fileName +'.jpeg', blob, {replace: true}).then(()=>{
+  //     if(fileName == 'returnLabel'){
+  //       this.returnLabelPhoto = writeDirectory + 'returnLabel.jpeg';
+  //     }else if(fileName == 'sku'){
+  //       this.skuPhoto = writeDirectory + 'sku.jpeg'
+  //     }else if(fileName == 'damaged'){
+  //       this.damagedAreaPhoto = writeDirectory + 'damaged.jpeg'
+  //     }else if(fileName == 'upfront'){
+  //       this.upFrontPhoto = writeDirectory + 'upfront.jpeg'
+  //     }
+  //   });
+  // }
 
   // if(item.typeName == 'Return Label'){
   //   item.isCaptured = true
@@ -578,10 +579,10 @@ export class ScanreturnsPage implements OnInit {
       })
     };
     const data = new FormData();
-    data.append("returnAppImages", this.returnLabelPhoto);
-    data.append("returnAppImages", this.skuPhoto);
-    data.append("returnAppImages", this.damagedAreaPhoto);
-    data.append("returnAppImages", this.upFrontPhoto);
+    for(let img of this.returnImages){
+      data.append("returnAppImages", img);
+    }
+   
 
     let url = this.Vanityartservice.baseUrl + this.Vanityartservice.sendEmail+this.respData['purchaseOrderNumber']+'/'+this.respData['itemUpc']+'/'+serialNo+
     '/'+parseInt(this.condition)+'/'+this.warehouse+'/'+this.userId+'/'+this.respData['isOpalOrder']+'/'+this.respData['isVanityArtOrder']+'/'+this.usertype;

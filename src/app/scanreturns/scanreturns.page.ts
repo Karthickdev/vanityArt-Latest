@@ -354,11 +354,16 @@ export class ScanreturnsPage implements OnInit {
 
   takePicture(type) {
     this.camera.getPicture(this.cameraOptions).then((imageData) => {
-      for(let item of this.photoType){
-        if(item.typeName == type.typeName){
-          item.img = (<any>window).Ionic.WebView.convertFileSrc(imageData);
-        }
-      }
+      
+      var filename = imageData.substring(imageData.lastIndexOf('/')+1);
+      var path =  imageData.substring(0,imageData.lastIndexOf('/')+1);
+         this.file.readAsDataURL(path, filename).then(res=>{
+          for(let item of this.photoType){
+            if(item.typeName == type.typeName){
+              item.img = res;
+            }
+          }
+         });
       this.file.resolveLocalFilesystemUrl(imageData).then((entry: FileEntry) => {
         entry.file(file => {
           console.log(file);

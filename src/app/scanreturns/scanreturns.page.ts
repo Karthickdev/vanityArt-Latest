@@ -352,65 +352,64 @@ export class ScanreturnsPage implements OnInit {
   }
 
   async takePhoto(type) {
-    // var tempImage = await this.camera.getPicture(this.cameraOptions);
-    // var tempFilename = tempImage.substr(tempImage.lastIndexOf('/') + 1);
-    // var tempBaseFilesystemPath = tempImage.substr(0, tempImage.lastIndexOf('/') + 1);
-    // var newBaseFilesystemPath = this.file.dataDirectory;
-    // await this.file.copyFile(tempBaseFilesystemPath, tempFilename, newBaseFilesystemPath, tempFilename);
-    // var storedPhoto = newBaseFilesystemPath + tempFilename;
-    // this.testAlert(storedPhoto);
-    // if(type.typeName == 'Return Label'){
-    //   this.returnLabelPhoto = storedPhoto
-    // }else if(type.typeName == 'SKU'){
-    //   this.skuPhoto = storedPhoto
-    // }else if(type.typeName == 'Damaged Area'){
-    //   this.damagedAreaPhoto = storedPhoto
-    // }else{
-    //   this.upFrontPhoto = storedPhoto
-    // }
-    // this.returnImages.push(storedPhoto);
-    // this.enableSaveBtn = true
+    var tempImage = await this.camera.getPicture(this.cameraOptions);
+    var tempFilename = tempImage.substr(tempImage.lastIndexOf('/') + 1);
+    var tempBaseFilesystemPath = tempImage.substr(0, tempImage.lastIndexOf('/') + 1);
+    var newBaseFilesystemPath = this.file.dataDirectory;
+    await this.file.copyFile(tempBaseFilesystemPath, tempFilename, newBaseFilesystemPath, tempFilename);
+    var storedPhoto = newBaseFilesystemPath + tempFilename;
+    if(type.typeName == 'Return Label'){
+      this.returnLabelPhoto = storedPhoto
+    }else if(type.typeName == 'SKU'){
+      this.skuPhoto = storedPhoto
+    }else if(type.typeName == 'Damaged Area'){
+      this.damagedAreaPhoto = storedPhoto
+    }else{
+      this.upFrontPhoto = storedPhoto
+    }
+    this.returnImages.push(storedPhoto);
+    this.enableSaveBtn = true
 
     
-    this.camera.getPicture(this.cameraOptions).then((imageData) => {
-      let base64Image = imageData;
-      for(let item of this.photoType){
-        if(item.typeName == type.typeName){
-          item.img = 'data:image/jpeg;base64,' + base64Image
-          if(item.typeName = 'Return Label'){
-            item.isCaptured = true
-            let returnBlob = this.dataURItoBlob(imageData);
-            this.writeFile('returnlabel', returnBlob);
-          }else if(item.typeName = 'SKU'){
-            item.isCaptured = true
-            let skuBlob = this.dataURItoBlob(imageData);
-            this.writeFile('sku', skuBlob);
-          }else if(item.typeName = 'Damaged Area'){
-            item.isCaptured = true
-            let damagedBlob = this.dataURItoBlob(imageData);
-            this.writeFile('damaged', damagedBlob);
-          }else if(item.typeName == 'Up front'){
-            item.isCaptured = true
-            let upFrontBlob = this.dataURItoBlob(imageData);
-            this.writeFile('upfront', upFrontBlob);
-          }
-        }
-      }
+    // this.camera.getPicture(this.cameraOptions).then((imageData) => {
+    //   let base64Image = imageData;
+    //   for(let item of this.photoType){
+    //     if(item.typeName == type.typeName){
+    //       item.img = 'data:image/jpeg;base64,' + base64Image
+    //       // if(item.typeName = 'Return Label'){
+    //       //   item.isCaptured = true
+    //       //   let returnBlob = this.dataURItoBlob(imageData);
+    //       //   this.writeFile('returnlabel', returnBlob);
+    //       // }else if(item.typeName = 'SKU'){
+    //       //   item.isCaptured = true
+    //       //   let skuBlob = this.dataURItoBlob(imageData);
+    //       //   this.writeFile('sku', skuBlob);
+    //       // }else if(item.typeName = 'Damaged Area'){
+    //       //   item.isCaptured = true
+    //       //   let damagedBlob = this.dataURItoBlob(imageData);
+    //       //   this.writeFile('damaged', damagedBlob);
+    //       // }else if(item.typeName == 'Up front'){
+    //       //   item.isCaptured = true
+    //       //   let upFrontBlob = this.dataURItoBlob(imageData);
+    //       //   this.writeFile('upfront', upFrontBlob);
+    //       // }
+    //     }
+    //   }
 
-       let checkCaptured = this.photoType.filter(i => i.isCaptured == false)
-       if(checkCaptured.length > 0){
-         this.enableSaveBtn = false
-       }else{
-         this.enableSaveBtn = true
-       }
-      // if(this.returnLabelPhoto && this.skuPhoto && this.damagedAreaPhoto && this.upFrontPhoto){
-      //   this.enableSaveBtn = true
-      // }else{
-      //   this.enableSaveBtn = false
-      // }
-     }, (err) => {
-      // Handle error
-     });
+    //    let checkCaptured = this.photoType.filter(i => i.isCaptured == false)
+    //    if(checkCaptured.length > 0){
+    //      this.enableSaveBtn = false
+    //    }else{
+    //      this.enableSaveBtn = true
+    //    }
+    //   // if(this.returnLabelPhoto && this.skuPhoto && this.damagedAreaPhoto && this.upFrontPhoto){
+    //   //   this.enableSaveBtn = true
+    //   // }else{
+    //   //   this.enableSaveBtn = false
+    //   // }
+    //  }, (err) => {
+    //   // Handle error
+    //  });
   }
 
   dataURItoBlob(dataURI): Blob{
@@ -545,10 +544,7 @@ export class ScanreturnsPage implements OnInit {
     formData.append("Notes", this.notes);
     formData.append("LoggedInUserId", this.userId);
     formData.append("isVanityArtUser", this.usertype);
-    formData.append("returnAppImages", this.returnLabelPhoto);
-    formData.append("returnAppImages", this.skuPhoto);
-    formData.append("returnAppImages", this.damagedAreaPhoto);
-    formData.append("returnAppImages", this.upFrontPhoto);
+    
     
     // for (let img of this.returnImages) {
     //   formData.append("returnAppImages", img);
@@ -560,7 +556,11 @@ export class ScanreturnsPage implements OnInit {
         this.Vanityartservice.dismiss();
         this.Vanityartservice.PresentToast('Item return saved successfully.', 'success');
         this.eventLog = 'Item return saved successfully.' + '\n' + this.eventLog
-        this.formreset();
+        this.sendEmailAlert();
+        setTimeout(()=>{
+          this.formreset();
+        }, 200);
+        
       } else {
         this.Vanityartservice.dismiss();
         this.Vanityartservice.PresentToast(res['displayMessage'], 'danger');
@@ -570,6 +570,30 @@ export class ScanreturnsPage implements OnInit {
       this.Vanityartservice.dismiss();
       this.Vanityartservice.PresentToast('Unable to reach server', 'danger');
     });
+  }
+
+  sendEmailAlert(){
+    this.Vanityartservice.present();
+    
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'multipart/form-data'
+      })
+    };
+    const data = new FormData();
+    data.append("returnAppImages", this.returnLabelPhoto);
+    data.append("returnAppImages", this.skuPhoto);
+    data.append("returnAppImages", this.damagedAreaPhoto);
+    data.append("returnAppImages", this.upFrontPhoto);
+
+    let url = this.Vanityartservice.baseUrl + this.Vanityartservice.sendEmail;
+    this.http.post(url, data, httpOptions).subscribe(res =>{
+      this.Vanityartservice.dismiss();
+    },err =>{
+      this.Vanityartservice.dismiss();
+      this.Vanityartservice.PresentToast("Unable to reach server", "danger");
+    });
+
   }
 
 }

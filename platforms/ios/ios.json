@@ -12,7 +12,8 @@
               "xml": "<string>This App requires access to camera.</string>",
               "count": 20
             }
-          ]
+          ],
+          "NSPhotoLibraryUsageDescription": []
         }
       },
       "config.xml": {

@@ -30,6 +30,7 @@ export class ApiserviceService {
   poScan: string = "ordersapi/ScanPoNumber";
   save: string = "OrdersApi/SaveReturn";
   itemScan: string ="OrdersApi/ValidateItemScan";
+  sendEmail: string = "OrdersApi/SendEmailAlertForItemReturn";
 	errorMessages: any;
   versionChecked: boolean;
   warehouses: any;

@@ -52,5 +52,7 @@
 	<string>CDVLaunchScreen</string>
 	<key>NSCameraUsageDescription</key>
 	<string>This App requires access to camera.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string/>
 </dict>
 </plist>

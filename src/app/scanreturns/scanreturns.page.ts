@@ -557,9 +557,6 @@ export class ScanreturnsPage implements OnInit {
         this.Vanityartservice.PresentToast('Item return saved successfully.', 'success');
         this.eventLog = 'Item return saved successfully.' + '\n' + this.eventLog
         this.sendEmailAlert();
-        setTimeout(()=>{
-          this.formreset();
-        }, 200);
         
       } else {
         this.Vanityartservice.dismiss();
@@ -574,7 +571,7 @@ export class ScanreturnsPage implements OnInit {
 
   sendEmailAlert(){
     this.Vanityartservice.present();
-    
+    let serialNo = this.isSerailScan ? this.serialScanning.controls['serial'].value.toUpperCase() : '';
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'multipart/form-data'
@@ -586,9 +583,11 @@ export class ScanreturnsPage implements OnInit {
     data.append("returnAppImages", this.damagedAreaPhoto);
     data.append("returnAppImages", this.upFrontPhoto);
 
-    let url = this.Vanityartservice.baseUrl + this.Vanityartservice.sendEmail;
+    let url = this.Vanityartservice.baseUrl + this.Vanityartservice.sendEmail+this.respData['purchaseOrderNumber']+'/'+this.respData['itemUpc']+'/'+serialNo+
+    '/'+parseInt(this.condition)+'/'+this.warehouse+'/'+this.userId+'/'+this.respData['isOpalOrder']+'/'+this.respData['isVanityArtOrder']+'/'+this.usertype;
     this.http.post(url, data, httpOptions).subscribe(res =>{
       this.Vanityartservice.dismiss();
+        this.formreset();
     },err =>{
       this.Vanityartservice.dismiss();
       this.Vanityartservice.PresentToast("Unable to reach server", "danger");

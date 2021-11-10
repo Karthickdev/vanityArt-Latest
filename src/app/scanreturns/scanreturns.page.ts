@@ -5,7 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Keyboard } from '@ionic-native/keyboard/ngx';
 import { IonContent, AlertController, IonRouterOutlet } from '@ionic/angular';
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
-import { File } from '@ionic-native/file/ngx';
+import { File, FileEntry, IWriteOptions } from '@ionic-native/file/ngx';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Component({
@@ -47,9 +47,10 @@ export class ScanreturnsPage implements OnInit {
   damagedAreaPhoto: any;
   upFrontPhoto: any;
   returnImages: any[] = [];
+  formData= new FormData();
   cameraOptions: CameraOptions = {
     quality: 20,
-    destinationType: this.camera.DestinationType.DATA_URL,
+    destinationType: this.camera.DestinationType.FILE_URI,
     encodingType: this.camera.EncodingType.JPEG,
     mediaType: this.camera.MediaType.PICTURE
   }
@@ -351,6 +352,30 @@ export class ScanreturnsPage implements OnInit {
     }
   }
 
+  takePicture() {
+    this.camera.getPicture(this.cameraOptions).then((imageData) => {
+      this.file.resolveLocalFilesystemUrl(imageData).then((entry: FileEntry) => {
+        entry.file(file => {
+          console.log(file);
+          this.readFile(file);
+        });
+      });
+    }, (err) => {
+      // Handle error
+    });
+  }
+
+  readFile(file: any) {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const imgBlob = new Blob([reader.result], {
+        type: file.type
+      });
+      this.formData.append('returnAppImages', imgBlob, file.name);
+    };
+    reader.readAsArrayBuffer(file);
+  }
+
   async takePhoto(type) {
     //var tempImage = await this.camera.getPicture(this.cameraOptions);
     // var tempFilename = tempImage.substr(tempImage.lastIndexOf('/') + 1);
@@ -591,24 +616,25 @@ export class ScanreturnsPage implements OnInit {
   sendEmailAlert(){
     this.Vanityartservice.present();
     let serialNo = this.isSerailScan ? this.serialScanning.controls['serial'].value.toUpperCase() : '';
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'multipart/form-data'
-      })
-    };
-    const data = new FormData();
-    data.append("returnAppImages", this.returnLabelPhoto);
-    data.append("returnAppImages", this.skuPhoto);
-    data.append("returnAppImages", this.damagedAreaPhoto);
-    data.append("returnAppImages", this.upFrontPhoto);
+    // const httpOptions = {
+    //   headers: new HttpHeaders({
+    //     'Content-Type': 'multipart/form-data'
+    //   })
+    // };
+    // const data = new FormData();
+    // data.append("returnAppImages", this.returnLabelPhoto);
+    // data.append("returnAppImages", this.skuPhoto);
+    // data.append("returnAppImages", this.damagedAreaPhoto);
+    // data.append("returnAppImages", this.upFrontPhoto);
     
    
 
     let url = this.Vanityartservice.baseUrl + this.Vanityartservice.sendEmail+this.respData['purchaseOrderNumber']+'/'+this.respData['itemUpc']+'/'+serialNo+
     '/'+parseInt(this.condition)+'/'+this.warehouse+'/'+this.userId+'/'+this.respData['isOpalOrder']+'/'+this.respData['isVanityArtOrder']+'/'+this.usertype;
-    this.http.post(url, data, httpOptions).subscribe(res =>{
+    this.http.post(url, this.formData).subscribe(res =>{
       console.log(res);
       this.Vanityartservice.dismiss();
+      this.Vanityartservice.PresentToast("Images Uploaded", "success");
         this.formreset();
     },err =>{
       this.Vanityartservice.dismiss();

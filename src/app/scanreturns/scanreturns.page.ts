@@ -352,8 +352,14 @@ export class ScanreturnsPage implements OnInit {
     }
   }
 
-  takePicture() {
+  takePicture(type) {
     this.camera.getPicture(this.cameraOptions).then((imageData) => {
+      let base64Image = imageData;
+      for(let item of this.photoType){
+        if(item.typeName == type.typeName){
+          item.img = 'data:image/jpeg;base64,' + base64Image
+        }
+      }
       this.file.resolveLocalFilesystemUrl(imageData).then((entry: FileEntry) => {
         entry.file(file => {
           console.log(file);

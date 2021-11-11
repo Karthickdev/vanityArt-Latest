@@ -441,7 +441,7 @@ export class ScanreturnsPage implements OnInit {
 
   async saveReturn() {
     this.Vanityartservice.present();
-    let serialNo = this.isSerailScan ? this.serialScanning.controls['serial'].value.toUpperCase() : '';
+    let serialNo = this.isSerailScan ? this.serialScanning.controls['serial'].value.toUpperCase() : 'NA';
     const formData = new FormData();
     formData.append("serialNumber", serialNo);
     formData.append("purchaseOrderNumber", this.respData['purchaseOrderNumber']);
@@ -485,7 +485,7 @@ export class ScanreturnsPage implements OnInit {
 
   sendEmailAlert(){
     this.Vanityartservice.present();
-    let serialNo = this.isSerailScan ? this.serialScanning.controls['serial'].value.toUpperCase() : '';
+    let serialNo = this.isSerailScan ? this.serialScanning.controls['serial'].value.toUpperCase() : 'NA';
     let url = this.Vanityartservice.baseUrl + this.Vanityartservice.sendEmail+this.respData['purchaseOrderNumber']+'/'+this.respData['itemUpc']+'/'+serialNo+
     '/'+parseInt(this.condition)+'/'+this.warehouse+'/'+this.userId+'/'+this.respData['isOpalOrder']+'/'+this.respData['isVanityArtOrder']+'/'+this.usertype;
     this.http.post(url, this.formData).subscribe(res =>{

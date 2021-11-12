@@ -441,7 +441,7 @@ export class ScanreturnsPage implements OnInit {
 
   async saveReturn() {
     this.Vanityartservice.present();
-    let serialNo = this.isSerailScan ? this.serialScanning.controls['serial'].value.toUpperCase() : 'NA';
+    let serialNo = this.isSerailScan ? this.serialScanning.controls['serial'].value.toUpperCase() : '';
     const formData = new FormData();
     formData.append("serialNumber", serialNo);
     formData.append("purchaseOrderNumber", this.respData['purchaseOrderNumber']);

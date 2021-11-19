@@ -513,8 +513,8 @@ var ApiserviceService = /** @class */ (function () {
         this.toastController = toastController;
         this.loadingCtrl = loadingCtrl;
         this.alert = alert;
-        this.baseUrl = 'http://67.79.237.242/opal/uat/vanityart/'; //UAT
-        //baseUrl: string = 'https://www2.order-fulfillment.bz/vanityart/'; //NEW PROD
+        //baseUrl: string = 'http://67.79.237.242/opal/uat/vanityart/'; //UAT
+        this.baseUrl = 'https://www2.order-fulfillment.bz/vanityart/'; //NEW PROD
         //Login
         this.userLogin = "UserApi/UserLogin";
         this.getscanitems = "ordersapi/BOLScanDetails";
@@ -534,6 +534,7 @@ var ApiserviceService = /** @class */ (function () {
         this.poScan = "ordersapi/ScanPoNumber";
         this.save = "OrdersApi/SaveReturn";
         this.itemScan = "OrdersApi/ValidateItemScan";
+        this.sendEmail = "OrdersApi/SendEmailAlertForItemReturn/";
     }
     ApiserviceService.prototype.PresentToast = function (msg, color) {
         return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
@@ -760,13 +761,13 @@ __webpack_require__.r(__webpack_exports__);
 
 
 var AppComponent = /** @class */ (function () {
-    //version: string = "0.1.1"; //PROD
     function AppComponent(platform, splashScreen, statusBar, Vanityartservice) {
         this.platform = platform;
         this.splashScreen = splashScreen;
         this.statusBar = statusBar;
         this.Vanityartservice = Vanityartservice;
-        this.version = "0.1.1"; //UAT
+        //version: string = "0.1.1"; //UAT
+        this.version = "0.1.1"; //PROD
         this.initializeApp();
         this.getErrorMessages();
     }

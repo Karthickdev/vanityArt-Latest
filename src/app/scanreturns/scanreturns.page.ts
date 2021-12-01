@@ -360,12 +360,14 @@ export class ScanreturnsPage implements OnInit {
       var path =  imageData.substring(0,imageData.lastIndexOf('/')+1);
          this.file.readAsDataURL(path, filename).then(res=>{
           for(let item of this.photoType){
-            if(item.typeName == type.typeName && !item.isCaptured){
-              item.img = res;
-              item.isCaptured = true
-            }else if(item.isCaptured){
-              item.img = res;
-              this.replacePicture = true
+            if(item.typeName == type.typeName){
+              if(!item.isCaptured){
+                item.img = res;
+                item.isCaptured = true
+              }else{
+                item.img = res;
+                this.replacePicture = true
+              }
             }
           }
           let checkCaptured = this.photoType.filter(i => i.isCaptured == false)
@@ -392,9 +394,10 @@ export class ScanreturnsPage implements OnInit {
       const imgBlob = new Blob([reader.result], {
         type: file.type
       });
-      if(this.replacePicture){
+      if(this.replacePicture == true){
         this.formData.delete(file.name);
         this.formData.append('returnAppImages', imgBlob, file.name);
+        this.replacePicture = false
       }else{
         this.formData.append('returnAppImages', imgBlob, file.name);
       }

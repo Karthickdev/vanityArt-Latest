@@ -357,19 +357,20 @@ export class ScanreturnsPage implements OnInit {
   }
 
   takePicture(type) {
+    var isReplace = false;
     this.camera.getPicture(this.cameraOptions).then((imageData) => {
       var filename = imageData.substring(imageData.lastIndexOf('/')+1);
       var path =  imageData.substring(0,imageData.lastIndexOf('/')+1);
          this.file.readAsDataURL(path, filename).then(res=>{
           for(let item of this.photoType){
             if(item.typeName == type.typeName){
-              if(!item.isCaptured){
-                item.img = res;
-                item.isCaptured = true
+              item.img = res;
+              if(item.isCaptured){
+                isReplace = true
                 this.photoTypename = item.typeName
               }else{
-                item.img = res;
-                this.replacePicture = true
+                item.isCaptured = true
+                isReplace = false
                 this.photoTypename = item.typeName
               }
             }
@@ -383,8 +384,9 @@ export class ScanreturnsPage implements OnInit {
          });
       this.file.resolveLocalFilesystemUrl(imageData).then((entry: FileEntry) => {
         entry.file(file => {
-          console.log(file);
-          this.readFile(file, this.photoTypename);
+          setTimeout(()=>{
+            this.readFile(file, this.photoTypename, isReplace);
+          }, 200);
         });
       });
     }, (err) => {
@@ -392,19 +394,18 @@ export class ScanreturnsPage implements OnInit {
     });
   }
 
-  readFile(file: any, photoTypename) {
+  readFile(file: any, photoTypename, isReplace) {
     const reader = new FileReader();
     reader.onloadend = () => {
       const imgBlob = new Blob([reader.result], {
         type: file.type
       });
-      if(this.replacePicture == true){
+      if(isReplace == true){
         for(let item of this.takenPictures){
           if(item.photoType == photoTypename){
             item.file = imgBlob
           }
         }
-        this.replacePicture = false
       }else{
         let data = {
           "photoType": photoTypename,
@@ -413,6 +414,7 @@ export class ScanreturnsPage implements OnInit {
         }
         this.takenPictures.push(data);
       }
+        
     };
     reader.readAsArrayBuffer(file);
   }

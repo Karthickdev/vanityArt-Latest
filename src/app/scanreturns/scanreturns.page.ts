@@ -49,6 +49,8 @@ export class ScanreturnsPage implements OnInit {
   returnImages: any[] = [];
   formData= new FormData();
   replacePicture: boolean = false;
+  photoTypename: any;
+  takenPictures: any[]=[];
   cameraOptions: CameraOptions = {
     quality: 20,
     destinationType: this.camera.DestinationType.FILE_URI,
@@ -364,9 +366,11 @@ export class ScanreturnsPage implements OnInit {
               if(!item.isCaptured){
                 item.img = res;
                 item.isCaptured = true
+                this.photoTypename = item.typeName
               }else{
                 item.img = res;
                 this.replacePicture = true
+                this.photoTypename = item.typeName
               }
             }
           }
@@ -380,7 +384,7 @@ export class ScanreturnsPage implements OnInit {
       this.file.resolveLocalFilesystemUrl(imageData).then((entry: FileEntry) => {
         entry.file(file => {
           console.log(file);
-          this.readFile(file);
+          this.readFile(file, this.photoTypename);
         });
       });
     }, (err) => {
@@ -388,18 +392,26 @@ export class ScanreturnsPage implements OnInit {
     });
   }
 
-  readFile(file: any) {
+  readFile(file: any, photoTypename) {
     const reader = new FileReader();
     reader.onloadend = () => {
       const imgBlob = new Blob([reader.result], {
         type: file.type
       });
       if(this.replacePicture == true){
-        this.formData.delete(file.name);
-        this.formData.append('returnAppImages', imgBlob, file.name);
+        for(let item of this.takenPictures){
+          if(item.photoType == photoTypename){
+            item.file = imgBlob
+          }
+        }
         this.replacePicture = false
       }else{
-        this.formData.append('returnAppImages', imgBlob, file.name);
+        let data = {
+          "photoType": photoTypename,
+          "fileName": file.name,
+          "file": imgBlob
+        }
+        this.takenPictures.push(data);
       }
     };
     reader.readAsArrayBuffer(file);
@@ -498,6 +510,9 @@ export class ScanreturnsPage implements OnInit {
 
   sendEmailAlert(){
     this.Vanityartservice.present();
+    for(let item of this.takenPictures){
+      this.formData.append('returnAppImages', item.file, item.fileName)
+    }
     let serialNo = this.isSerailScan ? this.serialScanning.controls['serial'].value.toUpperCase() : 'NA';
     let url = this.Vanityartservice.baseUrl + this.Vanityartservice.sendEmail+this.respData['purchaseOrderNumber']+'/'+this.respData['itemUpc']+'/'+serialNo+
     '/'+parseInt(this.condition)+'/'+this.warehouse+'/'+this.userId+'/'+this.respData['isOpalOrder']+'/'+this.respData['isVanityArtOrder']+'/'+this.usertype;

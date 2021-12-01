@@ -48,6 +48,7 @@ export class ScanreturnsPage implements OnInit {
   upFrontPhoto: any;
   returnImages: any[] = [];
   formData= new FormData();
+  replacePicture: boolean = false;
   cameraOptions: CameraOptions = {
     quality: 20,
     destinationType: this.camera.DestinationType.FILE_URI,
@@ -175,6 +176,7 @@ export class ScanreturnsPage implements OnInit {
     this.itemReadOnly = true;
     this.enableSaveBtn = false;
     this.enableTakePhoto = false;
+    this.formData = new FormData();
     this.photoType = [{ "typeName": "Return Label", "img": "../../assets/default-thumbnail.jpg", "isCaptured": false }, { "typeName": "SKU", "img": "../../assets/default-thumbnail.jpg", "isCaptured": false },
     { "typeName": "Damaged Area", "img": "../../assets/default-thumbnail.jpg", "isCaptured": false }, { "typeName": "Up front", "img": "../../assets/default-thumbnail.jpg", "isCaptured": false }]
     if (this.isSerailScan) {
@@ -358,9 +360,12 @@ export class ScanreturnsPage implements OnInit {
       var path =  imageData.substring(0,imageData.lastIndexOf('/')+1);
          this.file.readAsDataURL(path, filename).then(res=>{
           for(let item of this.photoType){
-            if(item.typeName == type.typeName){
+            if(item.typeName == type.typeName && !item.isCaptured){
               item.img = res;
               item.isCaptured = true
+            }else if(item.isCaptured){
+              item.img = res;
+              this.replacePicture = true
             }
           }
           let checkCaptured = this.photoType.filter(i => i.isCaptured == false)
@@ -387,7 +392,12 @@ export class ScanreturnsPage implements OnInit {
       const imgBlob = new Blob([reader.result], {
         type: file.type
       });
-      this.formData.append('returnAppImages', imgBlob, file.name);
+      if(this.replacePicture){
+        this.formData.delete(file.name);
+        this.formData.append('returnAppImages', imgBlob, file.name);
+      }else{
+        this.formData.append('returnAppImages', imgBlob, file.name);
+      }
     };
     reader.readAsArrayBuffer(file);
   }
